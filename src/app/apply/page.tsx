@@ -97,6 +97,7 @@ export default function ApplyPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const isRecordingRef = useRef(false);
   const mimeTypeRef = useRef("");
+  const lastPromptStartRef = useRef(0);
 
   const MAX_DURATION = 90;
   const PROMPT_DURATION = 45;
@@ -430,6 +431,9 @@ export default function ApplyPage() {
         Math.floor(elapsed / PROMPT_DURATION),
         (application?.prompts.length || 1) - 1
       );
+      if (newPromptIndex > 0 && lastPromptStartRef.current === 0) {
+        lastPromptStartRef.current = elapsed;
+      }
       setCurrentPromptIndex(newPromptIndex);
 
       if (elapsed >= MAX_DURATION) {
@@ -1414,11 +1418,24 @@ export default function ApplyPage() {
                           }}
                         />
                       </div>
-                      <p className="text-xs text-slate-500 mt-2">
-                        {currentPromptIndex < (application?.prompts.length || 1) - 1
-                          ? `${PROMPT_DURATION - (duration % PROMPT_DURATION)}s until next question`
-                          : `${Math.max(0, MAX_DURATION - duration)}s remaining`}
-                      </p>
+                      <div className="flex items-center justify-between mt-2">
+                        <p className="text-xs text-slate-500">
+                          {currentPromptIndex < (application?.prompts.length || 1) - 1
+                            ? `${PROMPT_DURATION - (duration % PROMPT_DURATION)}s until next question`
+                            : `${Math.max(0, MAX_DURATION - duration)}s remaining`}
+                        </p>
+                        {currentPromptIndex < (application?.prompts.length || 1) - 1 && (
+                          <button
+                            onClick={() => {
+                              lastPromptStartRef.current = duration;
+                              setCurrentPromptIndex(currentPromptIndex + 1);
+                            }}
+                            className="text-xs text-slate-400 hover:text-white transition-colors"
+                          >
+                            Skip to next question &rarr;
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -1482,17 +1499,25 @@ export default function ApplyPage() {
                             </button>
                           )}
 
-                          {isRecording && (
-                            <button
-                              onClick={stopRecording}
-                              disabled={duration < PROMPT_DURATION * (application?.prompts.length || 1)}
-                              className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                            >
-                              {duration < PROMPT_DURATION
-                                ? `Answer both questions (${PROMPT_DURATION - duration}s)`
-                                : "Stop Recording"}
-                            </button>
-                          )}
+                          {isRecording && (() => {
+                            const onLastQuestion = currentPromptIndex >= (application?.prompts.length || 1) - 1;
+                            const timeOnLastQuestion = onLastQuestion ? duration - lastPromptStartRef.current : 0;
+                            const canStop = onLastQuestion && timeOnLastQuestion >= PROMPT_DURATION;
+                            const secsLeft = PROMPT_DURATION - timeOnLastQuestion;
+                            return (
+                              <button
+                                onClick={stopRecording}
+                                disabled={!canStop}
+                                className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                              >
+                                {!onLastQuestion
+                                  ? `Answer both questions (${PROMPT_DURATION - duration}s)`
+                                  : canStop
+                                    ? "Stop Recording"
+                                    : `${secsLeft}s remaining`}
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     )}
