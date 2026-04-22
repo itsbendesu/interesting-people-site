@@ -560,7 +560,9 @@ export default function UploadPage() {
               />
             </div>
             <p className="text-xs text-slate-500 mt-2">
-              {PROMPT_DURATION - (duration % PROMPT_DURATION)}s until next question
+              {currentPromptIndex < (application?.prompts.length || 1) - 1
+                ? `${PROMPT_DURATION - (duration % PROMPT_DURATION)}s until next question`
+                : `${Math.max(0, MAX_DURATION - duration)}s remaining`}
             </p>
           </div>
         )}
@@ -654,9 +656,12 @@ export default function UploadPage() {
                 {isRecording && (
                   <button
                     onClick={stopRecording}
-                    className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all"
+                    disabled={duration < PROMPT_DURATION * (application?.prompts.length || 1)}
+                    className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    Stop Recording
+                    {duration < PROMPT_DURATION
+                      ? `Answer both questions (${PROMPT_DURATION - duration}s)`
+                      : "Stop Recording"}
                   </button>
                 )}
               </div>
