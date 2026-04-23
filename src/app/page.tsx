@@ -173,15 +173,17 @@ export default function Home() {
           src="/images/ip3/lakefront-sunset.jpeg"
           alt="Lakefront sunset at IP3"
           fill
+          sizes="100vw"
           className="object-cover animate-ken-burns"
           priority
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         <HeroParallax className="relative z-10 max-w-6xl mx-auto px-6 w-full pb-16 md:pb-24">
-          <h1 className="animate-hero text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold text-white leading-[1.05] tracking-tight drop-shadow-lg [text-shadow:_0_4px_30px_rgba(0,0,0,0.8),_0_1px_6px_rgba(0,0,0,0.9)]">
+          <h1 className="animate-hero text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold text-white leading-[1.05] tracking-tight [text-shadow:_0_2px_14px_rgba(0,0,0,0.9)]">
             Make interesting friends.
           </h1>
-          <p className="animate-hero-delay-1 mt-5 text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl [text-shadow:_0_2px_16px_rgba(0,0,0,0.7),_0_1px_4px_rgba(0,0,0,0.8)]">
+          <p className="animate-hero-delay-1 mt-5 text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]">
             150 people selected for{" "}
             <span className="text-white font-bold">curiosity</span> and{" "}
             <span className="text-white font-bold">warmth</span>, hanging out in one of the world&apos;s most beautiful places.
@@ -219,13 +221,14 @@ export default function Home() {
             {notablePeople.map((person, i) => (
               <FadeIn key={person.name} delay={i * 40}>
               <div className="text-center group">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-3 relative bg-stone-200 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-3 relative bg-stone-200 transition-transform duration-300 group-hover:scale-105 will-change-transform">
                   <Image
                     src={person.image}
                     alt={person.name}
                     fill
                     className="object-cover grayscale"
                     sizes="128px"
+                    loading="lazy"
                   />
                 </div>
                 <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
@@ -391,13 +394,13 @@ export default function Home() {
       <div className="bg-blue-600 py-6">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
           <p className="text-white font-medium text-lg md:text-xl">
-            Only <CountUp target={150} duration={1000} /> spots. Over <CountUp target={6000} duration={2000} suffix="+" /> applications last year.
+            Only <CountUp target={150} duration={1000} /> spots. We&apos;re looking for interesting, not impressive.
           </p>
           <Link
             href="/apply"
             className="text-base text-blue-100 underline underline-offset-2 hover:text-white transition-colors"
           >
-            Apply before it&apos;s too late &rarr;
+            Apply to attend &rarr;
           </Link>
         </div>
       </div>

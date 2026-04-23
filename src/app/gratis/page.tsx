@@ -345,9 +345,12 @@ export default function GratisPage() {
                             pathLength={1}
                             className="animate-draw-path"
                           />
-                          <polygon
-                            points="4,3 16,7 10,16"
-                            fill="#f59e0b"
+                          <path
+                            d="M 8 8 L 16 10 M 8 8 L 10 16"
+                            stroke="#f59e0b"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            fill="none"
                             className="animate-fade-in-late"
                           />
                         </svg>
@@ -394,9 +397,12 @@ export default function GratisPage() {
                             pathLength={1}
                             className="animate-draw-path-delayed"
                           />
-                          <polygon
-                            points="6,5 18,9 12,18"
-                            fill="#64748b"
+                          <path
+                            d="M 10 10 L 5 17 M 10 10 L 15 17"
+                            stroke="#64748b"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            fill="none"
                             className="animate-fade-in-later"
                           />
                         </svg>
