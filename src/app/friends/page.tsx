@@ -23,11 +23,14 @@ function getDescription(index: number) {
 
 function getSliderLabel(value: number, type: "hotel" | "local") {
   const cost = ACTUAL_COST[type];
-  const pct = value / cost;
-  if (pct <= 1.02) return "Our cost";
-  if (pct < 1.3) return "Chipping in a bit extra";
-  if (pct < 1.7) return "Someone else gets to be there because of you";
-  if (pct < 2.5) return "Filling the room with people who belong here";
+  const regularPrice = type === "hotel" ? 9999 : 5999;
+  const pct = value / regularPrice;
+  if (value <= cost * 1.02) return "At cost — no margin for scholarships";
+  if (pct < 0.6) return "Below the regular rate";
+  if (pct < 0.8) return "Friends & family rate";
+  if (pct < 1.0) return "Nearly the regular price — generous";
+  if (pct < 1.3) return "Above regular — funding a scholarship seat";
+  if (pct < 2.0) return "Someone else gets to be there because of you";
   return "This is seriously generous";
 }
 
@@ -41,8 +44,8 @@ export default function FriendsPage() {
   const [type, setType] = useState<"hotel" | "local">("hotel");
   const cost = PRICING[type].min;
   const max = PRICING[type].max;
-  const [hotelValue, setHotelValue] = useState(PRICING.hotel.min);
-  const [localValue, setLocalValue] = useState(PRICING.local.min);
+  const [hotelValue, setHotelValue] = useState(7499);
+  const [localValue, setLocalValue] = useState(4499);
   const [step, setStep] = useState<Step>("pricing");
 
   // Form state
@@ -159,10 +162,10 @@ export default function FriendsPage() {
               means you&apos;re already in — no application, no video, no hoops.
             </p>
             <p>
-              Pick what feels right for you — whether that&apos;s covering our
-              cost or chipping in extra so we can bring more people into the room
-              who couldn&apos;t otherwise afford to be there. All
-              prices are in US dollars.
+              Regular tickets are <span className="font-semibold text-stone-900">$9,999</span> ($5,999 for locals).
+              As a friend, you&apos;re invited at a discounted rate starting from our hard cost.
+              Anything above cost helps bring comedians, musicians, artists, and scientists
+              into the room — the people who make the weekend unforgettable. All prices in USD.
             </p>
           </div>
         </div>
@@ -175,28 +178,45 @@ export default function FriendsPage() {
           {/* ── STEP: PRICING ── */}
           {step === "pricing" && (
             <>
-              {/* Hotel Toggle */}
-              <div className="flex justify-center mb-10">
-                <div className="inline-flex bg-stone-100 rounded-full p-1">
+              {/* Hotel Toggle — prominent two-option picker */}
+              <div className="mb-10">
+                <p className="text-center text-sm font-medium text-stone-500 mb-4">
+                  First: do you need a hotel?
+                </p>
+                <div className="grid grid-cols-2 gap-3 max-w-xl mx-auto">
                   <button
                     onClick={() => setType("hotel")}
-                    className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                    className={`relative text-left px-5 py-4 rounded-2xl border-2 transition-all ${
                       type === "hotel"
-                        ? "bg-white text-stone-900 shadow-sm"
-                        : "text-stone-500 hover:text-stone-700"
+                        ? "border-blue-600 bg-blue-50 shadow-[0_4px_20px_rgba(37,99,235,0.15)]"
+                        : "border-stone-200 bg-white hover:border-stone-300"
                     }`}
                   >
-                    I need a hotel
+                    {type === "hotel" && (
+                      <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                    )}
+                    <span className="text-2xl block mb-1">🏨</span>
+                    <span className={`block font-semibold ${type === "hotel" ? "text-blue-900" : "text-stone-900"}`}>Yes, I need a hotel</span>
+                    <span className={`block text-xs mt-0.5 ${type === "hotel" ? "text-blue-700" : "text-stone-500"}`}>3 nights at a 5-star hotel</span>
                   </button>
                   <button
                     onClick={() => setType("local")}
-                    className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                    className={`relative text-left px-5 py-4 rounded-2xl border-2 transition-all ${
                       type === "local"
-                        ? "bg-white text-stone-900 shadow-sm"
-                        : "text-stone-500 hover:text-stone-700"
+                        ? "border-blue-600 bg-blue-50 shadow-[0_4px_20px_rgba(37,99,235,0.15)]"
+                        : "border-stone-200 bg-white hover:border-stone-300"
                     }`}
                   >
-                    I&apos;m local
+                    {type === "local" && (
+                      <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                    )}
+                    <span className="text-2xl block mb-1">🏠</span>
+                    <span className={`block font-semibold ${type === "local" ? "text-blue-900" : "text-stone-900"}`}>No, I&apos;m local</span>
+                    <span className={`block text-xs mt-0.5 ${type === "local" ? "text-blue-700" : "text-stone-500"}`}>I&apos;ll sleep at home</span>
                   </button>
                 </div>
               </div>
@@ -204,10 +224,10 @@ export default function FriendsPage() {
               {/* Slider Section */}
               <div className="bg-white rounded-2xl border border-stone-200 p-5 md:p-8 shadow-sm">
                 <p className="text-xs font-medium tracking-[0.2em] text-stone-400 uppercase mb-2">
-                  Choose your price
+                  Your friends &amp; family rate
                 </p>
                 <p className="text-sm text-stone-500 mb-8">
-                  Slide to whatever feels right. No judgement.
+                  Regular tickets are {type === "hotel" ? "$9,999" : "$5,999"}. Anything above our cost funds a scholarship seat for someone who&apos;d make the weekend better for everyone.
                 </p>
 
                 {/* Big Price Display */}
@@ -270,14 +290,119 @@ export default function FriendsPage() {
                       </div>
                     );
                   })}
-                  <div className="flex justify-between mt-5">
-                    <span className="text-xs text-stone-400">
-                      {formatPrice(cost)}
-                    </span>
+                  {/* Regular price tick line only (text replaced by prominent callout below) */}
+                  {(() => {
+                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPct = ((regularPrice - cost) / (max - cost)) * 100;
+                    return (
+                      <div
+                        className="absolute top-0 pointer-events-none"
+                        style={{ left: `${regularPct}%`, transform: "translateX(-50%)" }}
+                      >
+                        <div className="w-px h-5 bg-stone-400" />
+                      </div>
+                    );
+                  })()}
+
+                  {/* Bottom spacer sized for callouts + $max label */}
+                  <div className="flex justify-end mt-3 mb-32">
                     <span className="text-xs text-stone-400">
                       {formatPrice(max)}
                     </span>
                   </div>
+
+                  {/* ─── OUR COST CALLOUT (amber, anchored at slider left edge) ─── */}
+                  <div className="absolute left-0 pointer-events-none" style={{ top: "22px", zIndex: 3 }}>
+                    {/* Hand-drawn curved arrow — larger, draws in on load */}
+                    <svg
+                      width="96"
+                      height="78"
+                      viewBox="0 0 96 78"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute -top-2 -left-1 overflow-visible"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      <path
+                        d="M 72 72 C 50 60, 28 42, 14 20 C 10 14, 9 10, 8 8"
+                        stroke="#f59e0b"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        fill="none"
+                        pathLength={1}
+                        className="animate-draw-path"
+                      />
+                      <polygon
+                        points="4,3 16,7 10,16"
+                        fill="#f59e0b"
+                        className="animate-fade-in-late"
+                      />
+                    </svg>
+                    {/* Post-it note — tilted, shadowed, with infinite gentle wiggle */}
+                    <div
+                      className="mt-[68px] ml-10 inline-flex flex-col items-start bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 shadow-[0_6px_20px_rgba(245,158,11,0.2)] animate-cost-in animate-cost-wiggle"
+                      style={{ transformOrigin: "top left" }}
+                    >
+                      <span className="text-[9px] font-bold tracking-[0.15em] text-amber-600 uppercase leading-none">
+                        Our cost
+                      </span>
+                      <span className="text-base font-bold text-stone-900 tabular-nums leading-tight mt-1">
+                        {formatPrice(cost)}
+                      </span>
+                      <span className="text-[10px] text-stone-500 leading-tight mt-0.5 italic whitespace-nowrap">
+                        anything above funds scholarships
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* ─── REGULAR PRICE CALLOUT (slate, anchored at regular tick, extends RIGHT) ─── */}
+                  {(() => {
+                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPct = ((regularPrice - cost) / (max - cost)) * 100;
+                    const savings = Math.max(0, regularPrice - value);
+                    return (
+                      <div
+                        className="absolute pointer-events-none"
+                        style={{ left: `${regularPct}%`, top: "22px", zIndex: 3 }}
+                      >
+                        <svg
+                          width="88"
+                          height="78"
+                          viewBox="0 0 88 78"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="absolute -top-2 overflow-visible"
+                          style={{ left: "-8px" }}
+                        >
+                          <path
+                            d="M 70 72 C 48 58, 28 38, 16 18 C 12 12, 11 9, 10 8"
+                            stroke="#64748b"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            fill="none"
+                            pathLength={1}
+                            className="animate-draw-path-delayed"
+                          />
+                          <polygon
+                            points="6,3 18,7 12,16"
+                            fill="#64748b"
+                            className="animate-fade-in-later"
+                          />
+                        </svg>
+                        <div
+                          className="mt-[68px] ml-10 inline-flex flex-col items-start bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 shadow-[0_6px_20px_rgba(71,85,105,0.18)] animate-regular-in animate-regular-wiggle"
+                          style={{ transformOrigin: "top left" }}
+                        >
+                          <span className="text-[9px] font-bold tracking-[0.15em] text-slate-500 uppercase leading-none">
+                            Regular price
+                          </span>
+                          <span className="text-base font-bold text-slate-900 tabular-nums leading-tight mt-1">
+                            {formatPrice(regularPrice)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Scholarship impact */}
@@ -579,7 +704,7 @@ export default function FriendsPage() {
                   "Curated dinner groups (skip the small talk)",
                   "Lake swims, late-night conversations, new friendships",
                   ...(type === "hotel"
-                    ? ["3 nights luxury accommodation"]
+                    ? ["3 nights at a 5-star hotel"]
                     : []),
                 ].map((item) => (
                   <li
@@ -677,6 +802,69 @@ export default function FriendsPage() {
           border: 4px solid white;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(37, 99, 235, 0.1);
+        }
+        /* Path draw-in — stroke writes itself across the arrow */
+        @keyframes draw-path {
+          from { stroke-dasharray: 0 1; stroke-dashoffset: 0; }
+          to   { stroke-dasharray: 1 0; stroke-dashoffset: 0; }
+        }
+        .animate-draw-path {
+          stroke-dasharray: 0 1;
+          animation: draw-path 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards;
+        }
+        .animate-draw-path-delayed {
+          stroke-dasharray: 0 1;
+          animation: draw-path 0.9s cubic-bezier(0.65, 0, 0.35, 1) 1.0s forwards;
+        }
+        /* Arrowhead fades in after the path finishes drawing */
+        @keyframes fade-in-arrow {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in-late {
+          opacity: 0;
+          animation: fade-in-arrow 0.25s ease-out 1.2s forwards;
+        }
+        .animate-fade-in-later {
+          opacity: 0;
+          animation: fade-in-arrow 0.25s ease-out 1.8s forwards;
+        }
+        /* Cost note — springs in with a slight overshoot, lands at -4deg */
+        @keyframes cost-in {
+          0%   { opacity: 0; transform: translateY(-6px) rotate(-14deg); }
+          60%  { opacity: 1; transform: translateY(2px) rotate(-1deg); }
+          100% { opacity: 1; transform: translateY(0) rotate(-4deg); }
+        }
+        .animate-cost-in {
+          animation: cost-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s both;
+        }
+        /* Cost note — gentle recurring wiggle to keep catching the eye */
+        @keyframes cost-wiggle {
+          0%, 92%, 100% { transform: rotate(-4deg); }
+          94% { transform: rotate(-7deg); }
+          96% { transform: rotate(-1deg); }
+          98% { transform: rotate(-5deg); }
+        }
+        .animate-cost-wiggle {
+          animation: cost-wiggle 6s ease-in-out 2s infinite;
+        }
+        /* Regular note — mirror tilt (-3deg), arrives later */
+        @keyframes regular-in {
+          0%   { opacity: 0; transform: translateY(-6px) rotate(-11deg); }
+          60%  { opacity: 1; transform: translateY(2px) rotate(0deg); }
+          100% { opacity: 1; transform: translateY(0) rotate(-3deg); }
+        }
+        .animate-regular-in {
+          animation: regular-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s both;
+        }
+        @keyframes regular-wiggle {
+          0%, 92%, 100% { transform: rotate(-3deg); }
+          94% { transform: rotate(-6deg); }
+          96% { transform: rotate(0deg); }
+          98% { transform: rotate(-4deg); }
+        }
+        .animate-regular-wiggle {
+          animation: regular-wiggle 6s ease-in-out 2.6s infinite;
         }
       `}</style>
     </main>

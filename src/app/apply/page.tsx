@@ -896,6 +896,9 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "local" ? "text-white" : "text-slate-900"}`}>$5,999</span>
                           </div>
                           <p className={`text-sm mt-1 ${formData.ticketType === "local" ? "text-blue-100" : "text-slate-500"}`}>All sessions, meals &amp; activities. No hotel &mdash; Victoria residents only.</p>
+                          <div className="flex gap-1.5 mt-2">
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "local" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
+                          </div>
                         </button>
 
                         {/* Regular */}
@@ -912,7 +915,11 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "regular" ? "text-white" : "text-slate-900"}`}>🎟️ Regular</span>
                             <span className={`font-semibold ${formData.ticketType === "regular" ? "text-white" : "text-slate-900"}`}>$9,999</span>
                           </div>
-                          <p className={`text-sm mt-1 ${formData.ticketType === "regular" ? "text-blue-100" : "text-slate-500"}`}>All sessions, meals, activities &amp; 3 nights luxury accommodation.</p>
+                          <p className={`text-sm mt-1 ${formData.ticketType === "regular" ? "text-blue-100" : "text-slate-500"}`}>All sessions, meals, activities &amp; 3 nights at a 5-star hotel.</p>
+                          <div className="flex gap-1.5 mt-2">
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "regular" ? "bg-white/20 text-white" : "bg-blue-50 text-blue-700"}`}>🏨 5-star hotel</span>
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "regular" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
+                          </div>
                         </button>
 
                         {/* VIP — Most Popular */}
@@ -930,6 +937,10 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "vip" ? "text-white" : "text-slate-900"}`}>$14,999</span>
                           </div>
                           <p className={`text-sm mt-1 ${formData.ticketType === "vip" ? "text-blue-100" : "text-slate-500"}`}>Upgraded suite, black car service, and a private dinner with the speakers.</p>
+                          <div className="flex gap-1.5 mt-2">
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "vip" ? "bg-white/20 text-white" : "bg-blue-50 text-blue-700"}`}>🏨 5-star hotel</span>
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "vip" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
+                          </div>
                           <p className={`text-xs font-semibold mt-1.5 ${formData.ticketType === "vip" ? "text-blue-200" : "text-blue-700"}`}>Limited to 20 spots</p>
                         </button>
 
@@ -947,7 +958,11 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "patron" ? "text-white" : "text-slate-900"}`}>💛 Patron</span>
                             <span className={`font-semibold ${formData.ticketType === "patron" ? "text-white" : "text-slate-900"}`}>$19,999+</span>
                           </div>
-                          <p className={`text-sm mt-1 ${formData.ticketType === "patron" ? "text-blue-100" : "text-slate-500"}`}>The full VIP experience. Every dollar above cost puts someone in the room who couldn&apos;t otherwise be there.</p>
+                          <p className={`text-sm mt-1 ${formData.ticketType === "patron" ? "text-blue-100" : "text-slate-500"}`}>The full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make this weekend unforgettable.</p>
+                          <div className="flex gap-1.5 mt-2">
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "patron" ? "bg-white/20 text-white" : "bg-blue-50 text-blue-700"}`}>🏨 5-star hotel</span>
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "patron" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
+                          </div>
                         </button>
 
                         {/* Patron expanded options */}
@@ -1000,7 +1015,11 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "scholarship" ? "text-white" : "text-slate-900"}`}>🤝 Pay What You Can</span>
                             <span className={`font-semibold ${formData.ticketType === "scholarship" ? "text-white" : "text-slate-500"}`}>Flexible</span>
                           </div>
-                          <p className={`text-sm mt-1 ${formData.ticketType === "scholarship" ? "text-amber-100" : "text-slate-500"}`}>For artists, teachers, nonprofit folks, founders in the early days, and anyone whose work is more interesting than their bank account. Funded by our Patrons.</p>
+                          <p className={`text-sm mt-1 ${formData.ticketType === "scholarship" ? "text-amber-100" : "text-slate-500"}`}>Same experience, same everything. For people whose work is more interesting than their bank account. Funded by our Patrons.</p>
+                          <div className="flex gap-1.5 mt-2">
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "scholarship" ? "bg-white/20 text-white" : "bg-blue-50 text-blue-700"}`}>🏨 5-star hotel</span>
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "scholarship" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
+                          </div>
                         </button>
 
                         {/* Pay What You Can expanded input */}

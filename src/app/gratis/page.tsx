@@ -58,8 +58,8 @@ type Step = "pricing" | "form" | "submitted";
 export default function GratisPage() {
   const [type, setType] = useState<"hotel" | "local">("hotel");
   const max = PRICING[type].max;
-  const [hotelValue, setHotelValue] = useState(HOTEL_COST);
-  const [localValue, setLocalValue] = useState(0);
+  const [hotelValue, setHotelValue] = useState(2500);
+  const [localValue, setLocalValue] = useState(1000);
   const [step, setStep] = useState<Step>("pricing");
 
   // Form state
@@ -196,28 +196,45 @@ export default function GratisPage() {
           {/* ── STEP: PRICING ── */}
           {step === "pricing" && (
             <>
-              {/* Hotel Toggle */}
-              <div className="flex justify-center mb-10">
-                <div className="inline-flex bg-stone-100 rounded-full p-1">
+              {/* Hotel Toggle — prominent two-option picker */}
+              <div className="mb-10">
+                <p className="text-center text-sm font-medium text-stone-500 mb-4">
+                  First: do you need a hotel?
+                </p>
+                <div className="grid grid-cols-2 gap-3 max-w-xl mx-auto">
                   <button
                     onClick={() => setType("hotel")}
-                    className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                    className={`relative text-left px-5 py-4 rounded-2xl border-2 transition-all ${
                       type === "hotel"
-                        ? "bg-white text-stone-900 shadow-sm"
-                        : "text-stone-500 hover:text-stone-700"
+                        ? "border-blue-600 bg-blue-50 shadow-[0_4px_20px_rgba(37,99,235,0.15)]"
+                        : "border-stone-200 bg-white hover:border-stone-300"
                     }`}
                   >
-                    I need a hotel room
+                    {type === "hotel" && (
+                      <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                    )}
+                    <span className="text-2xl block mb-1">🏨</span>
+                    <span className={`block font-semibold ${type === "hotel" ? "text-blue-900" : "text-stone-900"}`}>Yes, I need a hotel</span>
+                    <span className={`block text-xs mt-0.5 ${type === "hotel" ? "text-blue-700" : "text-stone-500"}`}>3 nights at a 5-star hotel</span>
                   </button>
                   <button
                     onClick={() => setType("local")}
-                    className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                    className={`relative text-left px-5 py-4 rounded-2xl border-2 transition-all ${
                       type === "local"
-                        ? "bg-white text-stone-900 shadow-sm"
-                        : "text-stone-500 hover:text-stone-700"
+                        ? "border-blue-600 bg-blue-50 shadow-[0_4px_20px_rgba(37,99,235,0.15)]"
+                        : "border-stone-200 bg-white hover:border-stone-300"
                     }`}
                   >
-                    No hotel
+                    {type === "local" && (
+                      <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      </span>
+                    )}
+                    <span className="text-2xl block mb-1">🏠</span>
+                    <span className={`block font-semibold ${type === "local" ? "text-blue-900" : "text-stone-900"}`}>No, I&apos;m local</span>
+                    <span className={`block text-xs mt-0.5 ${type === "local" ? "text-blue-700" : "text-stone-500"}`}>I&apos;ll sleep at home</span>
                   </button>
                 </div>
               </div>
@@ -229,8 +246,8 @@ export default function GratisPage() {
                 </p>
                 <p className="text-sm text-stone-500 mb-8">
                   {type === "hotel"
-                    ? `Hotel is ${formatPrice(HOTEL_COST)}, your ticket costs us ${formatPrice(TICKET_COST)} to produce. Anything beyond that funds scholarship spots.`
-                    : `Your ticket costs us ${formatPrice(TICKET_COST)} to produce. $0 is genuinely fine — but anything you contribute helps fund scholarship spots.`
+                    ? `Your hotel runs ${formatPrice(HOTEL_COST)} for the weekend, and each ticket costs us ${formatPrice(TICKET_COST)} to produce. Whatever you can contribute makes a real difference.`
+                    : `Each seat costs us ${formatPrice(TICKET_COST)} to produce. Whatever you can contribute makes a real difference — and anything beyond that funds scholarship spots.`
                   }
                 </p>
 
@@ -263,6 +280,19 @@ export default function GratisPage() {
                       background: `linear-gradient(to right, #2563eb ${pct}%, #e7e5e4 ${pct}%)`,
                     }}
                   />
+                  {/* Regular price tick line (pointed to by Regular callout below) */}
+                  {(() => {
+                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPct = (regularPrice / max) * 100;
+                    return (
+                      <div
+                        className="absolute top-0 pointer-events-none"
+                        style={{ left: `${regularPct}%`, transform: "translateX(-50%)" }}
+                      >
+                        <div className="w-px h-5 bg-slate-500" />
+                      </div>
+                    );
+                  })()}
                   {/* Tick marks: seat cost + each additional scholarship */}
                   {Array.from({ length: Math.floor(max / cost) }).map((_, i) => {
                     const tickValue = cost * (i + 1);
@@ -283,12 +313,107 @@ export default function GratisPage() {
                       </div>
                     );
                   })}
-                  <div className="flex justify-between mt-5">
+                  <div className="flex justify-between mt-5 mb-52">
                     <span className="text-xs text-stone-400">$0</span>
                     <span className="text-xs text-stone-400">
                       {formatPrice(max)}
                     </span>
                   </div>
+
+                  {/* ─── OUR COST CALLOUT (upper row, closer to slider) ─── */}
+                  {(() => {
+                    const costPct = (cost / max) * 100;
+                    return (
+                      <div
+                        className="absolute pointer-events-none"
+                        style={{ left: `${costPct}%`, top: "22px", zIndex: 3 }}
+                      >
+                        <svg
+                          width="96"
+                          height="72"
+                          viewBox="0 0 96 72"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="absolute -top-2 -left-1 overflow-visible"
+                        >
+                          <path
+                            d="M 72 66 C 50 56, 28 40, 14 20 C 10 14, 9 10, 8 8"
+                            stroke="#f59e0b"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            fill="none"
+                            pathLength={1}
+                            className="animate-draw-path"
+                          />
+                          <polygon
+                            points="4,3 16,7 10,16"
+                            fill="#f59e0b"
+                            className="animate-fade-in-late"
+                          />
+                        </svg>
+                        <div
+                          className="mt-[62px] ml-10 inline-flex flex-col items-start bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 shadow-[0_6px_20px_rgba(245,158,11,0.2)] animate-cost-in animate-cost-wiggle"
+                          style={{ transformOrigin: "top left" }}
+                        >
+                          <span className="text-[9px] font-bold tracking-[0.15em] text-amber-600 uppercase leading-none">
+                            Our cost
+                          </span>
+                          <span className="text-base font-bold text-stone-900 tabular-nums leading-tight mt-1">
+                            {formatPrice(cost)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* ─── REGULAR PRICE CALLOUT (lower row, longer arrow reaching all the way to slider) ─── */}
+                  {(() => {
+                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPct = (regularPrice / max) * 100;
+                    const gift = Math.max(0, regularPrice - value);
+                    return (
+                      <div
+                        className="absolute pointer-events-none"
+                        style={{ left: `${regularPct}%`, top: "22px", zIndex: 3 }}
+                      >
+                        <svg
+                          width="100"
+                          height="152"
+                          viewBox="0 0 100 152"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="absolute -top-2 overflow-visible"
+                          style={{ left: "-8px" }}
+                        >
+                          <path
+                            d="M 78 146 C 70 128, 56 104, 40 78 C 26 54, 16 30, 12 16 C 11 13, 10.5 11, 10 10"
+                            stroke="#64748b"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            fill="none"
+                            pathLength={1}
+                            className="animate-draw-path-delayed"
+                          />
+                          <polygon
+                            points="6,5 18,9 12,18"
+                            fill="#64748b"
+                            className="animate-fade-in-later"
+                          />
+                        </svg>
+                        <div
+                          className="mt-[142px] ml-14 inline-flex flex-col items-start bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 shadow-[0_6px_20px_rgba(71,85,105,0.18)] animate-regular-in animate-regular-wiggle"
+                          style={{ transformOrigin: "top left" }}
+                        >
+                          <span className="text-[9px] font-bold tracking-[0.15em] text-slate-500 uppercase leading-none">
+                            Regular price
+                          </span>
+                          <span className="text-base font-bold text-slate-900 tabular-nums leading-tight mt-1">
+                            {formatPrice(regularPrice)}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Impact breakdown */}
@@ -607,7 +732,7 @@ export default function GratisPage() {
                   "Curated dinner groups (skip the small talk)",
                   "Lake swims, late-night conversations, new friendships",
                   ...(type === "hotel"
-                    ? ["3 nights luxury accommodation"]
+                    ? ["3 nights at a 5-star hotel"]
                     : []),
                 ].map((item) => (
                   <li
@@ -705,6 +830,64 @@ export default function GratisPage() {
           border: 4px solid white;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2),
             0 0 0 1px rgba(37, 99, 235, 0.1);
+        }
+        @keyframes draw-path {
+          from { stroke-dasharray: 0 1; stroke-dashoffset: 0; }
+          to   { stroke-dasharray: 1 0; stroke-dashoffset: 0; }
+        }
+        .animate-draw-path {
+          stroke-dasharray: 0 1;
+          animation: draw-path 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards;
+        }
+        .animate-draw-path-delayed {
+          stroke-dasharray: 0 1;
+          animation: draw-path 0.9s cubic-bezier(0.65, 0, 0.35, 1) 1.0s forwards;
+        }
+        @keyframes fade-in-arrow {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in-late {
+          opacity: 0;
+          animation: fade-in-arrow 0.25s ease-out 1.2s forwards;
+        }
+        .animate-fade-in-later {
+          opacity: 0;
+          animation: fade-in-arrow 0.25s ease-out 1.8s forwards;
+        }
+        @keyframes cost-in {
+          0%   { opacity: 0; transform: translateY(-6px) rotate(-14deg); }
+          60%  { opacity: 1; transform: translateY(2px) rotate(-1deg); }
+          100% { opacity: 1; transform: translateY(0) rotate(-4deg); }
+        }
+        .animate-cost-in {
+          animation: cost-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.55s both;
+        }
+        @keyframes cost-wiggle {
+          0%, 92%, 100% { transform: rotate(-4deg); }
+          94% { transform: rotate(-7deg); }
+          96% { transform: rotate(-1deg); }
+          98% { transform: rotate(-5deg); }
+        }
+        .animate-cost-wiggle {
+          animation: cost-wiggle 6s ease-in-out 2s infinite;
+        }
+        @keyframes regular-in {
+          0%   { opacity: 0; transform: translateY(-6px) rotate(-11deg); }
+          60%  { opacity: 1; transform: translateY(2px) rotate(0deg); }
+          100% { opacity: 1; transform: translateY(0) rotate(-3deg); }
+        }
+        .animate-regular-in {
+          animation: regular-in 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s both;
+        }
+        @keyframes regular-wiggle {
+          0%, 92%, 100% { transform: rotate(-3deg); }
+          94% { transform: rotate(-6deg); }
+          96% { transform: rotate(0deg); }
+          98% { transform: rotate(-4deg); }
+        }
+        .animate-regular-wiggle {
+          animation: regular-wiggle 6s ease-in-out 2.6s infinite;
         }
       `}</style>
     </main>

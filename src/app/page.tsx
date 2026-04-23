@@ -9,24 +9,24 @@ import ScrollProgress from "@/components/ScrollProgress";
 import HeroParallax from "@/components/HeroParallax";
 
 const notablePeople = [
-  { name: "Hannibal Buress", role: "Comedian", image: "/images/speakers/hannibal-buress.jpg" },
-  { name: "Sam Reich", role: "TV Producer", image: "/images/speakers/sam-reich.jpg" },
-  { name: "Greg Isenberg", role: "Entrepreneur", image: "/images/speakers/greg-isenberg.jpg" },
-  { name: "Dr. Rhonda Patrick", role: "Scientist", image: "/images/speakers/dr-rhonda-patrick.jpg" },
-  { name: "Matthew Buchanan", role: "Entrepreneur", image: "/images/speakers/matthew-buchanan.jpg" },
-  { name: "Patrick Campbell", role: "Entrepreneur", image: "/images/speakers/patrick-campbell.jpg" },
-  { name: "Shaan Puri", role: "Podcaster", image: "/images/speakers/shaan-puri.jpg" },
-  { name: "Bill Oakley", role: "TV Writer", image: "/images/speakers/bill-oakley.jpg" },
-  { name: "Darya Rose", role: "Neuroscientist", image: "/images/speakers/darya-rose.jpeg" },
-  { name: "Steph Smith", role: "Podcaster", image: "/images/speakers/steph-smith.jpg" },
-  { name: "Chris Sparling", role: "Investor", image: "/images/speakers/chris-sparling.jpg" },
-  { name: "Nick Gray", role: "Author", image: "/images/speakers/nick-gray.jpg" },
-  { name: "Matthew Dicks", role: "Storyteller", image: "/images/speakers/matthew-dicks.jpg" },
-  { name: "Adam Lisagor", role: "Director", image: "/images/speakers/adam-lisagor.jpg" },
-  { name: "Cyan Banister", role: "Investor", image: "/images/speakers/cyan-banister.jpg" },
-  { name: "Jon Glaser", role: "Comedian", image: "/images/speakers/jon-glaser.jpg" },
-  { name: "Josh Johnson", role: "Comedian", image: "/images/speakers/josh-johnson.jpg" },
-  { name: "Jason Verners", role: "Magician", image: "/images/speakers/jason-verners.jpg" },
+  { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
+  { name: "Sam Reich", role: "CEO", knownFor: "Dropout", image: "/images/speakers/sam-reich.jpg" },
+  { name: "Greg Isenberg", role: "CEO", knownFor: "Late Checkout", image: "/images/speakers/greg-isenberg.jpg" },
+  { name: "Dr. Rhonda Patrick", role: "Scientist", knownFor: "FoundMyFitness", image: "/images/speakers/dr-rhonda-patrick.jpg" },
+  { name: "Matthew Buchanan", role: "Co-Founder", knownFor: "Letterboxd", image: "/images/speakers/matthew-buchanan.jpg" },
+  { name: "Patrick Campbell", role: "Founder", knownFor: "ProfitWell", image: "/images/speakers/patrick-campbell.jpg" },
+  { name: "Shaan Puri", role: "Co-Host", knownFor: "My First Million", image: "/images/speakers/shaan-puri.jpg" },
+  { name: "Bill Oakley", role: "Writer", knownFor: "The Simpsons", image: "/images/speakers/bill-oakley.jpg" },
+  { name: "Darya Rose", role: "Neuroscientist", knownFor: "Foodist", image: "/images/speakers/darya-rose.jpeg" },
+  { name: "Steph Smith", role: "Podcast Host", knownFor: "a16z Podcast", image: "/images/speakers/steph-smith.jpg" },
+  { name: "Chris Sparling", role: "Co-Founder", knownFor: "Tiny", image: "/images/speakers/chris-sparling.jpg" },
+  { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
+  { name: "Matthew Dicks", role: "Storyteller", knownFor: "Storyworthy", image: "/images/speakers/matthew-dicks.jpg" },
+  { name: "Adam Lisagor", role: "Director", knownFor: "Sandwich", image: "/images/speakers/adam-lisagor.jpg" },
+  { name: "Cyan Banister", role: "Investor", knownFor: "Founders Fund", image: "/images/speakers/cyan-banister.jpg" },
+  { name: "Jon Glaser", role: "Comedian", knownFor: "Delocated", image: "/images/speakers/jon-glaser.jpg" },
+  { name: "Josh Johnson", role: "Comedian", knownFor: "The Daily Show", image: "/images/speakers/josh-johnson.jpg" },
+  { name: "Jason Verners", role: "Magician", knownFor: "", image: "/images/speakers/jason-verners.jpg" },
 ];
 
 const featuredTestimonials = [
@@ -191,7 +191,7 @@ export default function Home() {
               href="/apply"
               className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_4px_40px_rgba(0,0,0,0.6)] cursor-pointer"
             >
-              Apply for IP4
+              Apply to Attend
             </Link>
             <p className="text-sm text-white/50">
               July 27&ndash;29, 2026 &middot; Victoria, Canada
@@ -229,7 +229,9 @@ export default function Home() {
                   />
                 </div>
                 <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
-                <p className="text-xs text-stone-400">{person.role}</p>
+                <p className="text-xs text-stone-400">
+                  {person.role}{person.knownFor && <> · <span className="text-stone-500">{person.knownFor}</span></>}
+                </p>
               </div>
               </FadeIn>
             ))}
@@ -654,7 +656,10 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-stone-200 p-8 flex flex-col">
               <p className="text-sm font-medium tracking-[0.2em] text-stone-400 uppercase mb-2"><span className="mr-1.5">🏠</span>Local</p>
               <p className="text-4xl font-bold text-stone-900 mb-2">$5,999</p>
-              <p className="text-xs text-stone-400 mb-6">Victoria residents only</p>
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>
+                <span className="text-xs text-stone-400">Victoria residents only</span>
+              </div>
               <p className="text-stone-500 leading-relaxed mb-6 flex-grow text-sm">
                 You live here, you sleep at home. Full access to every session, meal, and activity &mdash; just no hotel room. Must have a Victoria, BC address and actually live here.
               </p>
@@ -684,9 +689,12 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-stone-200 p-8 flex flex-col">
               <p className="text-sm font-medium tracking-[0.2em] text-stone-400 uppercase mb-2"><span className="mr-1.5">🎟️</span>Regular</p>
               <p className="text-4xl font-bold text-stone-900 mb-2">$9,999</p>
-              <p className="text-xs text-stone-400 mb-6">The full experience</p>
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>
+              </div>
               <p className="text-stone-500 leading-relaxed mb-6 flex-grow text-sm">
-                Three days, all-in. Luxury accommodations, every meal, every session, every late-night conversation.
+                Three days, all-in. 5-star hotel, every meal, every session, every late-night conversation.
               </p>
               <ul className="text-sm text-stone-600 space-y-2 mb-8">
                 <li className="flex items-start gap-2">
@@ -699,7 +707,7 @@ export default function Home() {
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                  Luxury accommodations
+                  3 nights at a 5-star hotel
                 </li>
               </ul>
               <Link
@@ -717,7 +725,11 @@ export default function Home() {
               </span>
               <p className="text-sm font-medium tracking-[0.2em] text-blue-600 uppercase mb-2"><span className="mr-1.5">✨</span>VIP</p>
               <p className="text-4xl font-bold text-stone-900 mb-2">$14,999</p>
-              <p className="text-xs text-stone-400 mb-6">Limited to 20 guests</p>
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>
+                <span className="text-xs text-stone-400">Limited to 20</span>
+              </div>
               <p className="text-stone-500 leading-relaxed mb-6 flex-grow text-sm">
                 Everything in Regular, elevated. Best room, black car, front-row seats, a private dinner with speakers, and a personal concierge you can text anytime to handle whatever you need.
               </p>
@@ -762,8 +774,12 @@ export default function Home() {
                   <span className="mr-1.5">💛</span>Become a Patron &mdash; $19k+
                 </p>
                 <p className="text-sm text-stone-500 mt-1">
-                  Get the full VIP experience. Every dollar above cost puts someone in the room &mdash; an artist, a researcher, a builder &mdash; who&apos;d make the weekend better for everyone.
+                  Get the full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make this weekend unforgettable.
                 </p>
+                <div className="flex gap-1.5 mt-2">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>
+                </div>
               </div>
               <Link
                 href="/patron"
@@ -778,8 +794,12 @@ export default function Home() {
                   <span className="mr-1.5">🤝</span>Pay What You Can
                 </p>
                 <p className="text-sm text-stone-500 mt-1">
-                  You&apos;re doing work that&apos;s more interesting than it is lucrative. We set aside seats for people like you. Name your price and tell us why you&apos;d make the room better.
+                  Same 5-star hotel, same meals, same everything &mdash; just a price that matches your reality. Funded by our Patrons so the room stays interesting.
                 </p>
+                <div className="flex gap-1.5 mt-2">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>
+                </div>
               </div>
               <Link
                 href="/apply"
