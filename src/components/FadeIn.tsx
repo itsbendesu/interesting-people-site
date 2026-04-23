@@ -2,6 +2,32 @@
 
 import { useRef, useEffect, useState, type ReactNode } from "react";
 
+// Single shared observer across every FadeIn on the page. Creating one per
+// instance (47+ on the homepage) was measurably slowing down scroll.
+let sharedObserver: IntersectionObserver | null = null;
+const pending = new Map<Element, () => void>();
+
+function getObserver() {
+  if (sharedObserver) return sharedObserver;
+  if (typeof window === "undefined") return null;
+  sharedObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const cb = pending.get(entry.target);
+          if (cb) {
+            cb();
+            pending.delete(entry.target);
+            sharedObserver!.unobserve(entry.target);
+          }
+        }
+      }
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+  );
+  return sharedObserver;
+}
+
 export default function FadeIn({
   children,
   delay = 0,
@@ -19,20 +45,17 @@ export default function FadeIn({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    // Use shared observer if available, otherwise create one
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
-    );
-
+    const observer = getObserver();
+    if (!observer) {
+      setVisible(true);
+      return;
+    }
+    pending.set(el, () => setVisible(true));
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      pending.delete(el);
+      observer.unobserve(el);
+    };
   }, []);
 
   const transforms: Record<string, string> = {

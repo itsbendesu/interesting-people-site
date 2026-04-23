@@ -316,7 +316,7 @@ export default function Home() {
       </section>
 
       {/* Social Proof Wall */}
-      <section className="bg-stone-900 py-24 md:py-32 overflow-hidden">
+      <section className="bg-stone-900 py-24 md:py-32 overflow-hidden cv-auto-lg">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
           <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-10 text-center">
@@ -637,7 +637,7 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section className="bg-white py-24 md:py-32" id="pricing">
+      <section className="bg-white py-24 md:py-32 cv-auto-lg" id="pricing">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
           <div className="text-center mb-16">
@@ -814,7 +814,7 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 md:py-32 bg-stone-50" id="faq">
+      <section className="py-24 md:py-32 bg-stone-50 cv-auto-md" id="faq">
         <div className="max-w-3xl mx-auto px-6">
           <FadeIn>
           <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-16">

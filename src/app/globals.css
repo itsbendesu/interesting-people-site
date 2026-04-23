@@ -71,6 +71,12 @@ html {
   animation: kenBurns 25s ease-in-out both;
 }
 
+/* Skip layout/paint for far-off-screen sections so they don't fight for
+   compositor time while the user is scrolling. Intrinsic sizes approximate
+   each section's rendered height to avoid scroll-anchor jumps. */
+.cv-auto-lg { content-visibility: auto; contain-intrinsic-size: 1px 900px; }
+.cv-auto-md { content-visibility: auto; contain-intrinsic-size: 1px 600px; }
+
 /* CTA pulse glow */
 @keyframes ctaGlow {
   0%, 100% {
