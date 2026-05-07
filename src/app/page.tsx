@@ -30,6 +30,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Jaiya Varshney", role: "Founder", knownFor: "Tydra Biomaterial Labs", image: "/images/speakers/jaiya-varshney.jpg" },
   { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
   { name: "Marine Coursac", role: "Biologist & Photographer", knownFor: "ConnectEarth", image: "/images/speakers/marine-coursac.jpg" },
+  { name: "Tom Junod", role: "Writer", knownFor: "Esquire, Mister Rogers profile", image: "/images/speakers/tom-junod.jpg" },
 ];
 
 function initialsFor(name: string) {
