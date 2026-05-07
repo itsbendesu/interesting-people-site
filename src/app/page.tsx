@@ -735,7 +735,7 @@ export default function Home() {
             {/* Regular */}
             <div className="bg-white rounded-2xl border border-stone-200 p-6 md:p-8 flex flex-col">
               <p className="text-sm font-medium tracking-[0.2em] text-stone-400 uppercase mb-2"><span className="mr-1.5">🎟️</span>Regular</p>
-              <p className="text-4xl font-bold text-stone-900 mb-2">$9,999</p>
+              <p className="text-4xl font-bold text-stone-900 mb-2">$8,999</p>
               <div className="flex flex-wrap gap-1.5 mb-6">
                 <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full">🍽 All meals</span>

@@ -6,8 +6,8 @@ import { useState } from "react";
 const ACTUAL_COST = { hotel: 4499, local: 2999 };
 
 const PRICING = {
-  hotel: { min: 4499, max: 19999 },
-  local: { min: 2999, max: 19999 },
+  hotel: { min: 4499, max: 18999 },
+  local: { min: 2999, max: 18999 },
 };
 
 const SCHOLARSHIP_DESCRIPTIONS = [
@@ -23,7 +23,7 @@ function getDescription(index: number) {
 
 function getSliderLabel(value: number, type: "hotel" | "local") {
   const cost = ACTUAL_COST[type];
-  const regularPrice = type === "hotel" ? 9999 : 5999;
+  const regularPrice = type === "hotel" ? 8999 : 5999;
   const pct = value / regularPrice;
   if (value <= cost * 1.02) return "At cost — no margin for scholarships";
   if (pct < 0.6) return "Below the regular rate";
@@ -162,7 +162,7 @@ export default function FriendsPage() {
               means you&apos;re already in — no application, no video, no hoops.
             </p>
             <p>
-              Regular tickets are <span className="font-semibold text-stone-900">$9,999</span> ($5,999 for locals).
+              Regular tickets are <span className="font-semibold text-stone-900">$8,999</span> ($5,999 for locals).
               As a friend, you&apos;re invited at a discounted rate starting from our hard cost.
               Anything above cost helps bring comedians, musicians, artists, and scientists
               into the room — the people who make the weekend unforgettable. All prices in USD.
@@ -227,7 +227,7 @@ export default function FriendsPage() {
                   Your friends &amp; family rate
                 </p>
                 <p className="text-sm text-stone-500 mb-8">
-                  Regular tickets are {type === "hotel" ? "$9,999" : "$5,999"}. Anything above our cost funds a scholarship seat for someone who&apos;d make the weekend better for everyone.
+                  Regular tickets are {type === "hotel" ? "$8,999" : "$5,999"}. Anything above our cost funds a scholarship seat for someone who&apos;d make the weekend better for everyone.
                 </p>
 
                 {/* Big Price Display */}
@@ -251,7 +251,7 @@ export default function FriendsPage() {
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                    <span className="text-stone-500">Regular <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(type === "hotel" ? 9999 : 5999)}</span></span>
+                    <span className="text-stone-500">Regular <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(type === "hotel" ? 8999 : 5999)}</span></span>
                   </span>
                 </div>
 
@@ -304,7 +304,7 @@ export default function FriendsPage() {
                   })}
                   {/* Regular price tick line only (text replaced by prominent callout below) */}
                   {(() => {
-                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPrice = type === "hotel" ? 8999 : 5999;
                     const regularPct = ((regularPrice - cost) / (max - cost)) * 100;
                     return (
                       <div
@@ -376,7 +376,7 @@ export default function FriendsPage() {
 
                   {/* ─── REGULAR PRICE CALLOUT (slate, anchored at regular tick, extends RIGHT) ─── */}
                   {(() => {
-                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPrice = type === "hotel" ? 8999 : 5999;
                     const regularPct = ((regularPrice - cost) / (max - cost)) * 100;
                     const savings = Math.max(0, regularPrice - value);
                     return (

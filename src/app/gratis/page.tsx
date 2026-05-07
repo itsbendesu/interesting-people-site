@@ -7,8 +7,8 @@ const HOTEL_COST = 1500;
 const ACTUAL_COST = { hotel: 4499, local: 2999 };
 
 const PRICING = {
-  hotel: { min: 0, max: 19999 },
-  local: { min: 0, max: 19999 },
+  hotel: { min: 0, max: 18999 },
+  local: { min: 0, max: 18999 },
 };
 
 const SCHOLARSHIP_DESCRIPTIONS = [
@@ -282,7 +282,7 @@ export default function GratisPage() {
                   />
                   {/* Regular price tick line (pointed to by Regular callout below) */}
                   {(() => {
-                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPrice = type === "hotel" ? 8999 : 5999;
                     const regularPct = (regularPrice / max) * 100;
                     return (
                       <div
@@ -328,7 +328,7 @@ export default function GratisPage() {
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                      <span className="text-stone-500">Regular <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(type === "hotel" ? 9999 : 5999)}</span></span>
+                      <span className="text-stone-500">Regular <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(type === "hotel" ? 8999 : 5999)}</span></span>
                     </span>
                   </div>
 
@@ -383,7 +383,7 @@ export default function GratisPage() {
 
                   {/* ─── REGULAR PRICE CALLOUT (lower row, longer arrow reaching all the way to slider) ─── */}
                   {(() => {
-                    const regularPrice = type === "hotel" ? 9999 : 5999;
+                    const regularPrice = type === "hotel" ? 8999 : 5999;
                     const regularPct = (regularPrice / max) * 100;
                     const gift = Math.max(0, regularPrice - value);
                     return (

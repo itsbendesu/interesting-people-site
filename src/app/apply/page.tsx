@@ -952,7 +952,7 @@ export default function ApplyPage() {
                         >
                           <div className="flex items-baseline justify-between">
                             <span className={`font-semibold ${formData.ticketType === "regular" ? "text-white" : "text-slate-900"}`}>🎟️ Regular</span>
-                            <span className={`font-semibold ${formData.ticketType === "regular" ? "text-white" : "text-slate-900"}`}>$9,999</span>
+                            <span className={`font-semibold ${formData.ticketType === "regular" ? "text-white" : "text-slate-900"}`}>$8,999</span>
                           </div>
                           <p className={`text-sm mt-1 ${formData.ticketType === "regular" ? "text-blue-100" : "text-slate-500"}`}>All sessions, meals, activities &amp; 3 nights at a 5-star hotel.</p>
                           <div className="flex gap-1.5 mt-2">
