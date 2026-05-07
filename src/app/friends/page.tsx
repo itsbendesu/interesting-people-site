@@ -121,15 +121,15 @@ export default function FriendsPage() {
     <main className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-1 font-bold text-lg text-stone-900 tracking-tight"
+            className="flex items-center gap-1 font-bold text-base sm:text-lg text-stone-900 tracking-tight min-h-[44px]"
           >
             Interesting People
             <sup className="text-blue-600 text-sm font-bold">4</sup>
           </Link>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Link
               href="/"
               className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors"
@@ -138,7 +138,7 @@ export default function FriendsPage() {
             </Link>
             <Link
               href="/apply"
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
             >
               Apply Now
             </Link>
@@ -148,15 +148,15 @@ export default function FriendsPage() {
 
       {/* Hero */}
       {step !== "submitted" && (
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20">
-        <div className="max-w-3xl mx-auto px-6">
-          <p className="text-sm font-medium tracking-[0.15em] text-blue-600 uppercase mb-4">
+      <section className="pt-24 pb-10 sm:pt-32 sm:pb-16 md:pt-40 md:pb-20">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6">
+          <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-blue-600 uppercase mb-3 sm:mb-4">
             Friends & Family
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-stone-900 tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-[2.25rem] leading-[1.1] sm:text-4xl md:text-6xl font-bold text-stone-900 tracking-tight mb-5 sm:mb-6">
             You&apos;re one of Andrew&apos;s people.
           </h1>
-          <div className="text-lg md:text-xl text-stone-600 leading-relaxed space-y-4">
+          <div className="text-base sm:text-lg md:text-xl text-stone-600 leading-relaxed space-y-4">
             <p>
               If you&apos;re here, Andrew personally invited you to IP4. That
               means you&apos;re already in — no application, no video, no hoops.
@@ -173,8 +173,8 @@ export default function FriendsPage() {
       )}
 
       {/* Main Content */}
-      <section className={`pb-24 md:pb-32 ${step === "submitted" ? "pt-32 md:pt-40" : ""}`}>
-        <div className="max-w-2xl mx-auto px-6">
+      <section className={`pb-16 sm:pb-24 md:pb-32 ${step === "submitted" ? "pt-24 sm:pt-32 md:pt-40" : ""}`}>
+        <div className="max-w-2xl mx-auto px-5 sm:px-6 overflow-x-clip">
           {/* ── STEP: PRICING ── */}
           {step === "pricing" && (
             <>
@@ -231,8 +231,8 @@ export default function FriendsPage() {
                 </p>
 
                 {/* Big Price Display */}
-                <div className="text-center mb-8">
-                  <p className="text-5xl md:text-7xl font-bold text-stone-900 tracking-tight tabular-nums">
+                <div className="text-center mb-6 sm:mb-8">
+                  <p className="text-4xl sm:text-5xl md:text-7xl font-bold text-stone-900 tracking-tight tabular-nums">
                     {formatPrice(value)}{" "}
                     <span className="text-xs font-medium tracking-[0.2em] text-stone-400 uppercase">
                       USD
@@ -241,6 +241,18 @@ export default function FriendsPage() {
                   <p className="text-sm text-blue-600 font-medium mt-2">
                     {sliderLabel}
                   </p>
+                </div>
+
+                {/* Mobile-only price reference row (callouts are hidden < sm) */}
+                <div className="flex sm:hidden items-center justify-center gap-4 mb-3 text-xs">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    <span className="text-stone-500">Our cost <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(cost)}</span></span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+                    <span className="text-stone-500">Regular <span className="font-semibold text-stone-900 tabular-nums">{formatPrice(type === "hotel" ? 9999 : 5999)}</span></span>
+                  </span>
                 </div>
 
                 {/* Slider with tick marks */}
@@ -305,14 +317,18 @@ export default function FriendsPage() {
                   })()}
 
                   {/* Bottom spacer sized for callouts + $max label */}
-                  <div className="flex justify-end mt-3 mb-32">
+                  <div className="flex justify-between mt-3 mb-4 sm:mb-32">
+                    <span className="text-xs text-stone-400 sm:hidden">
+                      Our cost: {formatPrice(cost)}
+                    </span>
+                    <span className="hidden sm:inline" />
                     <span className="text-xs text-stone-400">
                       {formatPrice(max)}
                     </span>
                   </div>
 
                   {/* ─── OUR COST CALLOUT (amber, anchored at slider left edge) ─── */}
-                  <div className="absolute left-0 pointer-events-none" style={{ top: "22px", zIndex: 3 }}>
+                  <div className="absolute left-0 pointer-events-none hidden sm:block" style={{ top: "22px", zIndex: 3 }}>
                     {/* Hand-drawn curved arrow — larger, draws in on load */}
                     <svg
                       width="96"
@@ -365,7 +381,7 @@ export default function FriendsPage() {
                     const savings = Math.max(0, regularPrice - value);
                     return (
                       <div
-                        className="absolute pointer-events-none"
+                        className="absolute pointer-events-none hidden sm:block"
                         style={{ left: `${regularPct}%`, top: "22px", zIndex: 3 }}
                       >
                         <svg
@@ -526,11 +542,12 @@ export default function FriendsPage() {
                       id="friends-name"
                       type="text"
                       required
+                      autoComplete="name"
                       value={form.name}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, name: e.target.value }))
                       }
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="Your full name"
                     />
                   </div>
@@ -543,11 +560,13 @@ export default function FriendsPage() {
                       id="friends-email"
                       type="email"
                       required
+                      autoComplete="email"
+                      inputMode="email"
                       value={form.email}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, email: e.target.value }))
                       }
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="you@example.com"
                     />
                   </div>
@@ -560,11 +579,13 @@ export default function FriendsPage() {
                       id="friends-phone"
                       type="tel"
                       required
+                      autoComplete="tel"
+                      inputMode="tel"
                       value={form.phone}
                       onChange={(e) =>
                         setForm((f) => ({ ...f, phone: e.target.value }))
                       }
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
@@ -582,7 +603,7 @@ export default function FriendsPage() {
                       }
                       rows={3}
                       maxLength={500}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                       placeholder="What do you do? What are you into? A sentence or two is fine."
                     />
                   </div>
@@ -600,7 +621,7 @@ export default function FriendsPage() {
                         setForm((f) => ({ ...f, teachSkill: e.target.value }))
                       }
                       maxLength={300}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="e.g. Improv comedy, close-up magic, how to tell a story that lands"
                     />
                   </div>
@@ -631,7 +652,7 @@ export default function FriendsPage() {
                               setForm((f) => ({ ...f, socials: { ...f.socials, [platform.key]: e.target.value } }))
                             }
                             maxLength={200}
-                            className="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base sm:text-sm"
                             placeholder={platform.placeholder}
                           />
                         </div>
@@ -740,8 +761,8 @@ export default function FriendsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-stone-100 py-12">
-        <div className="max-w-6xl mx-auto px-6">
+      <footer className="bg-white border-t border-stone-100 py-10 sm:py-12">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div>
               <p className="text-lg font-bold text-stone-900 mb-1">

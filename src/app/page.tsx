@@ -8,6 +8,40 @@ import QuoteReveal from "@/components/QuoteReveal";
 import ScrollProgress from "@/components/ScrollProgress";
 import HeroParallax from "@/components/HeroParallax";
 
+const comingThisYear: { name: string; role: string; knownFor: string; image?: string }[] = [
+  { name: "Tim Heidecker", role: "Comedian", knownFor: "Tim and Eric", image: "/images/speakers/tim-heidecker.jpg" },
+  { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
+  { name: "Josh Johnson", role: "Comedian", knownFor: "The Daily Show", image: "/images/speakers/josh-johnson.jpg" },
+  { name: "Kevin Rose", role: "Investor", knownFor: "Digg, True Ventures", image: "/images/speakers/kevin-rose.jpg" },
+  { name: "Dr. Rhonda Patrick", role: "Scientist", knownFor: "FoundMyFitness", image: "/images/speakers/dr-rhonda-patrick.jpg" },
+  { name: "Steph Smith", role: "Growth", knownFor: "Nvidia", image: "/images/speakers/steph-smith.jpg" },
+  { name: "Dan Mangan", role: "Musician", knownFor: "Juno Winner, Side Door", image: "/images/speakers/dan-mangan.jpg" },
+  { name: "Matthew Dicks", role: "Storyteller", knownFor: "Storyworthy", image: "/images/speakers/matthew-dicks.jpg" },
+  { name: "Jayson Gaignard", role: "Community Builder", knownFor: "Mastermind Talks", image: "/images/speakers/jayson-gaignard.jpg" },
+  { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
+  { name: "Brianne Kimmel", role: "Investor", knownFor: "Worklife Ventures", image: "/images/speakers/brianne-kimmel.jpg" },
+  { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
+  { name: "Simran Kaur", role: "Podcast Host", knownFor: "Girls That Invest", image: "/images/speakers/simran-kaur.jpg" },
+  { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
+  { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
+  { name: "Brit MacRae", role: "Actress", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
+  { name: "Ann Makosinski", role: "Inventor", knownFor: "Hollow Flashlight", image: "/images/speakers/ann-makosinski.jpg" },
+  { name: "Dr. Ashley Mason", role: "Psychologist", knownFor: "UCSF", image: "/images/speakers/ashley-mason.jpg" },
+  { name: "Jaiya Varshney", role: "Founder", knownFor: "Tydra Biomaterial Labs", image: "/images/speakers/jaiya-varshney.jpg" },
+  { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
+  { name: "Marine Coursac", role: "Biologist & Photographer", knownFor: "ConnectEarth", image: "/images/speakers/marine-coursac.jpg" },
+];
+
+function initialsFor(name: string) {
+  return name
+    .replace(/^Dr\.\s+/i, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
 const notablePeople = [
   { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
   { name: "Sam Reich", role: "CEO", knownFor: "Dropout", image: "/images/speakers/sam-reich.jpg" },
@@ -41,7 +75,7 @@ const featuredTestimonials = [
     quote:
       "Interesting People is exactly what a conference should be, but often isn\u2019t.",
     name: "Steph Smith",
-    descriptor: "Creator of Internet Pipes, a16z Podcast Host",
+    descriptor: "Growth, Nvidia",
     image: "/images/speakers/steph-smith.jpg",
   },
   {
@@ -108,7 +142,7 @@ function TestimonialBlock({
   return (
     <section className={`py-10 md:py-14 ${bg}`}>
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <p className="text-2xl md:text-3xl lg:text-4xl text-stone-800 leading-relaxed font-serif italic text-balance">
+        <p className="text-xl md:text-3xl lg:text-4xl text-stone-800 leading-relaxed font-serif italic text-balance">
           &ldquo;<QuoteReveal text={quote} />&rdquo;
         </p>
         <div className="mt-5 flex flex-col items-center gap-2">
@@ -139,19 +173,19 @@ function AnglePhotos({
   images: { src: string; alt: string; rotate: string }[];
 }) {
   return (
-    <div className="py-16 md:py-24 bg-white overflow-hidden">
+    <div className="py-12 md:py-24 bg-white overflow-hidden">
       <div className="max-w-5xl mx-auto px-6 flex justify-center items-center gap-4 md:gap-8">
         {images.map((img, i) => (
           <div
             key={i}
-            className={`w-56 h-40 md:w-80 md:h-56 relative rounded-lg overflow-hidden shadow-xl flex-shrink-0 ${img.rotate} ${i === 1 ? "hidden md:block translate-y-4" : ""} ${i === 2 ? "hidden lg:block -translate-y-2" : ""}`}
+            className={`w-64 h-44 sm:w-72 sm:h-48 md:w-80 md:h-56 relative rounded-lg overflow-hidden shadow-xl flex-shrink-0 ${img.rotate} ${i === 1 ? "hidden md:block translate-y-4" : ""} ${i === 2 ? "hidden lg:block -translate-y-2" : ""}`}
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
               className="object-cover object-top"
-              sizes="320px"
+              sizes="(min-width: 768px) 320px, 256px"
             />
           </div>
         ))}
@@ -179,23 +213,23 @@ export default function Home() {
           fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        <HeroParallax className="relative z-10 max-w-6xl mx-auto px-6 w-full pb-16 md:pb-24">
-          <h1 className="animate-hero text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold text-white leading-[1.05] tracking-tight [text-shadow:_0_2px_14px_rgba(0,0,0,0.9)]">
+        <HeroParallax className="relative z-10 max-w-6xl mx-auto px-6 w-full pb-12 md:pb-24">
+          <h1 className="animate-hero text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold text-white leading-[1.05] tracking-tight text-balance [text-shadow:_0_2px_14px_rgba(0,0,0,0.9)]">
             Make interesting friends.
           </h1>
-          <p className="animate-hero-delay-1 mt-5 text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]">
+          <p className="animate-hero-delay-1 mt-4 md:mt-5 text-base md:text-xl text-white/80 leading-relaxed max-w-2xl text-pretty [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]">
             150 people selected for{" "}
             <span className="text-white font-bold">curiosity</span> and{" "}
             <span className="text-white font-bold">warmth</span>, hanging out in one of the world&apos;s most beautiful places.
           </p>
-          <div className="animate-hero-delay-2 mt-8 flex items-center gap-6">
+          <div className="animate-hero-delay-2 mt-6 md:mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
             <Link
               href="/apply"
-              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_4px_40px_rgba(0,0,0,0.6)] cursor-pointer"
+              className="inline-flex items-center justify-center min-h-12 px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_4px_40px_rgba(0,0,0,0.6)] cursor-pointer w-full sm:w-auto"
             >
               Apply to Attend
             </Link>
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-white/60">
               July 27&ndash;29, 2026 &middot; Victoria, Canada
             </p>
           </div>
@@ -205,19 +239,66 @@ export default function Home() {
       {/* Testimonial — Shaan Puri */}
       <TestimonialBlock {...featuredTestimonials[1]} bg="bg-stone-50" />
 
-      {/* Alumni Grid */}
-      <section className="bg-white py-24 md:py-32" id="people">
+      {/* Coming This Year */}
+      <section className="bg-white py-16 md:py-32" id="coming">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4">
+            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">IP4 &middot; July 27&ndash;29, 2026</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
+              Who&apos;s coming this year.
+            </h2>
+            <p className="text-base md:text-lg text-stone-500 max-w-2xl mb-10 md:mb-12 text-pretty">
+              A few of the 150 joining us in Victoria. More to come &mdash; and a handful you&apos;ll only meet when you&apos;re there.
+            </p>
+          </FadeIn>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 sm:gap-6 md:gap-8">
+            {comingThisYear.map((person, i) => (
+              <FadeIn key={person.name} delay={i * 30}>
+                <div className="text-center group">
+                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-3 relative bg-stone-200 transition-transform duration-300 group-hover:scale-105 will-change-transform">
+                    {person.image ? (
+                      <Image
+                        src={person.image}
+                        alt={person.name}
+                        fill
+                        className="object-cover"
+                        sizes="(min-width: 768px) 128px, 96px"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-stone-200 to-stone-300 text-stone-500 font-serif text-2xl md:text-3xl select-none">
+                        {initialsFor(person.name)}
+                      </div>
+                    )}
+                  </div>
+                  <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
+                  {person.role && (
+                    <p className="text-xs text-stone-400">{person.role}</p>
+                  )}
+                  {person.knownFor && (
+                    <p className="text-xs text-stone-500">{person.knownFor}</p>
+                  )}
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Alumni Grid */}
+      <section className="bg-white py-16 md:py-32" id="people">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn>
+            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
               Some of our alumni.
             </h2>
-            <p className="text-lg text-stone-500 max-w-2xl mb-12">
+            <p className="text-base md:text-lg text-stone-500 max-w-2xl mb-10 md:mb-12 text-pretty">
               Founders, comedians, scientists, storytellers, artists, investors. The only thing they have in common is that they&apos;re interesting.
             </p>
           </FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 sm:gap-6 md:gap-8">
             {notablePeople.map((person, i) => (
               <FadeIn key={person.name} delay={i * 40}>
               <div className="text-center group">
@@ -227,12 +308,12 @@ export default function Home() {
                     alt={person.name}
                     fill
                     className="object-cover grayscale"
-                    sizes="128px"
+                    sizes="(min-width: 768px) 128px, 96px"
                     loading="lazy"
                   />
                 </div>
                 <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
-                <p className="text-xs text-stone-400">
+                <p className="text-xs text-stone-400 text-pretty">
                   {person.role}{person.knownFor && <> · <span className="text-stone-500">{person.knownFor}</span></>}
                 </p>
               </div>
@@ -255,13 +336,13 @@ export default function Home() {
       />
 
       {/* A Note from Andrew */}
-      <section className="bg-stone-50 py-24 md:py-32" id="about">
+      <section className="bg-stone-50 py-16 md:py-32" id="about">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
           <div className="max-w-3xl">
-            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4">How it all started.</h2>
-            <p className="text-sm font-medium tracking-[0.15em] text-stone-400 uppercase mb-6">A note from Andrew</p>
-            <div className="text-lg md:text-xl text-stone-700 leading-relaxed space-y-6">
+            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">How it all started.</h2>
+            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-stone-400 uppercase mb-6">A note from Andrew</p>
+            <div className="text-base md:text-xl text-stone-700 leading-relaxed space-y-6">
               <p>
                 In 2010, I was twenty-four, sitting at a big circular table at my first tech
                 conference. Cheesy gold chairs, greyhound bus pattern cushions, hotel banquet
@@ -306,11 +387,11 @@ export default function Home() {
       </section>
 
       {/* Photo Gallery */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-24">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-2xl md:text-3xl font-bold text-stone-900 tracking-tight mb-1">What happens when 150 interesting people put their phones away.</p>
-            <p className="text-base text-stone-400 mb-4">Show and tell. Comedy. Music. Incredible food. Magic (yes, literally).</p>
+            <p className="text-xl md:text-3xl font-bold text-stone-900 tracking-tight mb-1 text-balance">What happens when 150 interesting people put their phones away.</p>
+            <p className="text-sm md:text-base text-stone-400 mb-4 text-pretty">Show and tell. Comedy. Music. Incredible food. Magic (yes, literally).</p>
           </FadeIn>
           <FadeIn delay={100}>
           <PhotoGallery />
@@ -319,18 +400,18 @@ export default function Home() {
       </section>
 
       {/* Social Proof Wall */}
-      <section className="bg-stone-900 py-24 md:py-32 overflow-hidden cv-auto-lg">
+      <section className="bg-stone-900 py-16 md:py-32 overflow-hidden cv-auto-lg">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-10 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-10 text-center text-balance">
             People rave about Interesting People.
           </h2>
           </FadeIn>
 
           {/* Hero quote */}
           <FadeIn>
-          <div className="text-center mb-16">
-            <p className="text-3xl md:text-4xl lg:text-5xl font-serif italic text-white/70 leading-snug max-w-3xl mx-auto text-balance">
+          <div className="text-center mb-12 md:mb-16">
+            <p className="text-2xl md:text-4xl lg:text-5xl font-serif italic text-white/70 leading-snug max-w-3xl mx-auto text-balance">
               &ldquo;<QuoteReveal text="I usually find events a waste of time, but Interesting People was the opposite." />&rdquo;
             </p>
             <p className="text-white/40 text-sm mt-6">
@@ -341,15 +422,15 @@ export default function Home() {
 
           {/* Quote grid — 2x2, big and juicy */}
           <FadeIn delay={100}>
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-20">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-16 md:mb-20">
             {[
               { quote: "It\u2019s rare that you go to an event where the bulk of people aren\u2019t on their phone.", name: "Jayson Gaignard", role: "Founder, Mastermind Talks", image: "/images/speakers/jayson-gaignard.avif" },
               { quote: "A great collection of smart people working on interesting things.", name: "Nick Gray", role: "Author & Founder", image: "/images/speakers/nick-gray.jpg" },
               { quote: "So many inspiring conversations, connections made, learnings and insight.", name: "Tessa McLoughlin", role: "Founder & Director, KWENCH", image: "/images/speakers/tessa-mcloughlin.avif" },
               { quote: "I had a blast.", name: "Shaan Puri", role: "Co-host, My First Million", image: "/images/speakers/shaan-puri.jpg" },
             ].map((t, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-8 md:p-10">
-                <p className="text-xl md:text-2xl text-white leading-relaxed mb-8">
+              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-10">
+                <p className="text-lg md:text-2xl text-white leading-relaxed mb-6 md:mb-8 text-pretty">
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-4">
@@ -381,8 +462,8 @@ export default function Home() {
           {/* Big stat */}
           <FadeIn>
           <div className="text-center">
-            <p className="text-7xl md:text-9xl font-bold text-white tracking-tight"><CountUp target={94} suffix="%" /></p>
-            <p className="text-lg md:text-xl text-white/60 mt-4">
+            <p className="text-6xl sm:text-7xl md:text-9xl font-bold text-white tracking-tight"><CountUp target={94} suffix="%" /></p>
+            <p className="text-base md:text-xl text-white/60 mt-4 text-pretty">
               of attendees said they&apos;d come back in a heartbeat.
             </p>
           </div>
@@ -392,13 +473,13 @@ export default function Home() {
 
       {/* Scarcity bar */}
       <div className="bg-blue-600 py-6">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
-          <p className="text-white font-medium text-lg md:text-xl">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center">
+          <p className="text-white font-medium text-base md:text-xl text-balance">
             Only <CountUp target={150} duration={1000} /> spots. We&apos;re looking for interesting, not impressive.
           </p>
           <Link
             href="/apply"
-            className="text-base text-blue-100 underline underline-offset-2 hover:text-white transition-colors"
+            className="inline-flex items-center min-h-11 text-base text-blue-100 underline underline-offset-2 hover:text-white transition-colors"
           >
             Apply to attend &rarr;
           </Link>
@@ -406,7 +487,7 @@ export default function Home() {
       </div>
 
       {/* The IP Difference — red/green treatment */}
-      <section className="py-24 md:py-32 bg-stone-50 overflow-hidden">
+      <section className="py-16 md:py-32 bg-stone-50 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           {/* Column headers — desktop only */}
           <FadeIn>
@@ -421,7 +502,7 @@ export default function Home() {
 
           {/* Mobile heading */}
           <div className="md:hidden mb-6">
-            <h2 className="text-2xl font-bold text-stone-900 tracking-tight">This is not that.</h2>
+            <h2 className="text-3xl font-bold text-stone-900 tracking-tight text-balance">This is not that.</h2>
           </div>
           </FadeIn>
 
@@ -435,18 +516,18 @@ export default function Home() {
               { theirs: "Fluorescent-lit convention centers with no windows", ours: "Beautiful venues surrounded by nature in Victoria, BC" },
               { theirs: "Optimized for sponsors and optics", ours: "Optimized for genuine human connection" },
             ].map((row, i) => (
-              <div key={i} className="grid md:grid-cols-2 gap-1 md:gap-0 py-4 md:py-0">
-                <FadeIn direction="left" delay={i * 100} className="md:py-6 md:pr-8 md:border-r md:border-stone-200 flex items-center gap-3">
-                  <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div key={i} className="grid md:grid-cols-2 gap-2 md:gap-0 py-5 md:py-0">
+                <FadeIn direction="left" delay={i * 100} className="md:py-6 md:pr-8 md:border-r md:border-stone-200 flex items-start md:items-center gap-3">
+                  <svg className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5 md:mt-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <p className="text-red-400 line-through decoration-red-300 text-sm md:text-base">{row.theirs}</p>
+                  <p className="text-red-400 line-through decoration-red-300 text-sm md:text-base text-pretty">{row.theirs}</p>
                 </FadeIn>
-                <FadeIn direction="right" delay={i * 100 + 100} className="md:py-6 md:pl-8 flex items-center gap-3">
-                  <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <FadeIn direction="right" delay={i * 100 + 100} className="md:py-6 md:pl-8 flex items-start md:items-center gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5 md:mt-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <p className="text-stone-900 font-medium text-sm md:text-base">{row.ours}</p>
+                  <p className="text-stone-900 font-medium text-sm md:text-base text-pretty">{row.ours}</p>
                 </FadeIn>
               </div>
             ))}
@@ -458,7 +539,7 @@ export default function Home() {
       <section className="py-10 md:py-14 bg-white">
         <FadeIn>
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <p className="text-2xl md:text-3xl lg:text-4xl text-stone-800 leading-relaxed font-serif italic">
+          <p className="text-xl md:text-3xl lg:text-4xl text-stone-800 leading-relaxed font-serif italic text-balance">
             &ldquo;<QuoteReveal text="Met a roomful of people who were genuinely incredible human beings: Smart. Kind. Generous. Curious. Open minded. A collection of damn unicorns." />&rdquo;
           </p>
           <div className="mt-5 flex flex-col items-center gap-2">
@@ -481,20 +562,20 @@ export default function Home() {
       </section>
 
       {/* The Process */}
-      <section className="bg-white py-24 md:py-32" id="process">
+      <section className="bg-white py-16 md:py-32" id="process">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-          <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-balance">
             Ten minutes. That&apos;s it.
           </h2>
-          <p className="text-lg text-stone-500 max-w-2xl mb-16">
+          <p className="text-base md:text-lg text-stone-500 max-w-2xl mb-12 md:mb-16 text-pretty">
             We made the bar to apply low and the bar to get in high. It&apos;s intentionally
             simple, intentionally uncomfortable, and intentionally human.
           </p>
           </FadeIn>
 
           <FadeIn delay={100}>
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-12">
             <div>
               <span className="text-5xl font-bold text-blue-600/20 leading-none">01</span>
               <h3 className="text-xl font-semibold text-stone-900 mt-3 mb-3">Tell us who you are</h3>
@@ -526,14 +607,14 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={200}>
-          <div className="mt-16 pt-12 border-t border-stone-200 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+          <div className="mt-12 md:mt-16 pt-10 md:pt-12 border-t border-stone-200 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center">
             <Link
               href="/apply"
-              className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center min-h-12 px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
             >
               Start Your Application
             </Link>
-            <p className="text-sm text-stone-400">
+            <p className="text-sm text-stone-400 text-center sm:text-left">
               Applications reviewed on a rolling basis. Apply early.
             </p>
           </div>
@@ -542,19 +623,19 @@ export default function Home() {
       </section>
 
       {/* What We Look For */}
-      <section className="py-24 md:py-32 bg-stone-50">
+      <section className="py-16 md:py-32 bg-stone-50">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-          <div className="flex flex-col md:flex-row md:items-start md:gap-16 mb-16">
+          <div className="flex flex-col md:flex-row md:items-start md:gap-16 mb-12 md:mb-16">
             <div className="md:flex-1">
-              <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6">
+              <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-balance">
                 What gets you in.
               </h2>
-              <p className="text-lg text-stone-500 mb-6">
+              <p className="text-base md:text-lg text-stone-500 mb-6 text-pretty">
                 When we review applications, we ask one question: did this person make us
                 feel warm and gooey inside?
               </p>
-              <p className="text-lg text-stone-500 mb-6">
+              <p className="text-base md:text-lg text-stone-500 mb-6 text-pretty">
                 We immediately cross people off when we see red flags like:{" "}
                 <span className="text-stone-700 font-medium">&ldquo;Chief Innovation Officer.&rdquo;</span>{" "}
                 <span className="text-stone-700 font-medium">&ldquo;Futurist.&rdquo;</span>{" "}
@@ -563,7 +644,7 @@ export default function Home() {
                 And the most dreaded of all:{" "}
                 <span className="text-stone-700 font-medium">&ldquo;Forbes 30 Under 30.&rdquo;</span>
               </p>
-              <p className="text-lg text-stone-500">
+              <p className="text-base md:text-lg text-stone-500 text-pretty">
                 We&apos;re not looking for titles. We&apos;re looking for three things.
               </p>
             </div>
@@ -640,14 +721,14 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section className="bg-white py-24 md:py-32 cv-auto-lg" id="pricing">
+      <section className="bg-white py-16 md:py-32 cv-auto-lg" id="pricing">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
               Pick your experience.
             </h2>
-            <p className="text-lg text-stone-500 max-w-xl mx-auto">
+            <p className="text-base md:text-lg text-stone-500 max-w-xl mx-auto text-pretty">
               Every tier includes all sessions, meals, and activities. The difference is where you sleep and who you dine with.
             </p>
           </div>
@@ -656,7 +737,7 @@ export default function Home() {
           <FadeIn delay={100}>
           <div className="grid md:grid-cols-3 gap-6">
             {/* Local */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-8 flex flex-col">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 md:p-8 flex flex-col">
               <p className="text-sm font-medium tracking-[0.2em] text-stone-400 uppercase mb-2"><span className="mr-1.5">🏠</span>Local</p>
               <p className="text-4xl font-bold text-stone-900 mb-2">$5,999</p>
               <div className="flex flex-wrap gap-1.5 mb-6">
@@ -682,14 +763,14 @@ export default function Home() {
               </ul>
               <Link
                 href="/apply"
-                className="inline-flex items-center justify-center px-6 py-3.5 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
+                className="inline-flex items-center justify-center min-h-12 px-6 py-3.5 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
               >
                 Apply
               </Link>
             </div>
 
             {/* Regular */}
-            <div className="bg-white rounded-2xl border border-stone-200 p-8 flex flex-col">
+            <div className="bg-white rounded-2xl border border-stone-200 p-6 md:p-8 flex flex-col">
               <p className="text-sm font-medium tracking-[0.2em] text-stone-400 uppercase mb-2"><span className="mr-1.5">🎟️</span>Regular</p>
               <p className="text-4xl font-bold text-stone-900 mb-2">$9,999</p>
               <div className="flex flex-wrap gap-1.5 mb-6">
@@ -715,15 +796,15 @@ export default function Home() {
               </ul>
               <Link
                 href="/apply"
-                className="inline-flex items-center justify-center px-6 py-3.5 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
+                className="inline-flex items-center justify-center min-h-12 px-6 py-3.5 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
               >
                 Apply Now
               </Link>
             </div>
 
             {/* VIP */}
-            <div className="bg-white rounded-2xl border-2 border-blue-500 p-8 flex flex-col relative">
-              <span className="absolute -top-3 left-8 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+            <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 md:p-8 flex flex-col relative">
+              <span className="absolute -top-3 left-6 md:left-8 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                 The Full Treatment
               </span>
               <p className="text-sm font-medium tracking-[0.2em] text-blue-600 uppercase mb-2"><span className="mr-1.5">✨</span>VIP</p>
@@ -760,7 +841,7 @@ export default function Home() {
               </ul>
               <Link
                 href="/apply"
-                className="inline-flex items-center justify-center px-6 py-3.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
+                className="inline-flex items-center justify-center min-h-12 px-6 py-3.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] w-full"
               >
                 Apply for VIP
               </Link>
@@ -771,7 +852,7 @@ export default function Home() {
           <FadeIn delay={200}>
           {/* Patron & Pay What You Can */}
           <div className="mt-8 grid md:grid-cols-2 gap-4">
-            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl px-8 py-6 flex flex-col justify-between">
+            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl px-6 md:px-8 py-6 flex flex-col justify-between">
               <div>
                 <p className="font-semibold text-stone-900">
                   <span className="mr-1.5">💛</span>Become a Patron &mdash; $19k+
@@ -786,12 +867,12 @@ export default function Home() {
               </div>
               <Link
                 href="/patron"
-                className="inline-flex items-center justify-center px-6 py-3 bg-stone-900 text-white rounded-full font-medium text-sm hover:bg-stone-800 transition-all mt-5 w-full"
+                className="inline-flex items-center justify-center min-h-11 px-6 py-3 bg-stone-900 text-white rounded-full font-medium text-sm hover:bg-stone-800 transition-all mt-5 w-full"
               >
                 Learn More
               </Link>
             </div>
-            <div className="bg-amber-50/50 border border-amber-100 rounded-2xl px-8 py-6 flex flex-col justify-between">
+            <div className="bg-amber-50/50 border border-amber-100 rounded-2xl px-6 md:px-8 py-6 flex flex-col justify-between">
               <div>
                 <p className="font-semibold text-stone-900">
                   <span className="mr-1.5">🤝</span>Pay What You Can
@@ -806,7 +887,7 @@ export default function Home() {
               </div>
               <Link
                 href="/apply"
-                className="inline-flex items-center justify-center px-6 py-3 bg-stone-900 text-white rounded-full font-medium text-sm hover:bg-stone-800 transition-all mt-5 w-full"
+                className="inline-flex items-center justify-center min-h-11 px-6 py-3 bg-stone-900 text-white rounded-full font-medium text-sm hover:bg-stone-800 transition-all mt-5 w-full"
               >
                 Apply
               </Link>
@@ -817,10 +898,10 @@ export default function Home() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 md:py-32 bg-stone-50 cv-auto-md" id="faq">
+      <section className="py-16 md:py-32 bg-stone-50 cv-auto-md" id="faq">
         <div className="max-w-3xl mx-auto px-6">
           <FadeIn>
-          <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-10 md:mb-16 text-balance">
             Questions we hear a lot.
           </h2>
           </FadeIn>
@@ -829,8 +910,8 @@ export default function Home() {
             {faqs.map((faq, i) => (
               <FadeIn key={i} delay={i * 60}>
               <details className="group border-b border-stone-200">
-                <summary className="flex items-center justify-between py-6 cursor-pointer list-none">
-                  <h3 className="text-lg font-medium text-stone-900 pr-8">{faq.q}</h3>
+                <summary className="flex items-center justify-between gap-4 py-5 md:py-6 min-h-12 cursor-pointer list-none">
+                  <h3 className="text-base md:text-lg font-medium text-stone-900 text-pretty">{faq.q}</h3>
                   <svg
                     className="w-5 h-5 text-blue-500 flex-shrink-0 transition-transform group-open:rotate-45"
                     fill="none"
@@ -840,7 +921,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                 </summary>
-                <p className="pb-6 text-stone-500 leading-relaxed pr-12">{faq.a}</p>
+                <p className="pb-6 text-sm md:text-base text-stone-500 leading-relaxed pr-2 md:pr-12 text-pretty">{faq.a}</p>
               </details>
               </FadeIn>
             ))}
@@ -860,20 +941,20 @@ export default function Home() {
                 A gathering for the genuinely curious.
               </p>
             </div>
-            <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-              <Link href="/apply" className="text-stone-500 hover:text-stone-900 transition-colors">
+            <div className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-1 text-sm">
+              <Link href="/apply" className="inline-flex items-center min-h-11 text-stone-500 hover:text-stone-900 transition-colors">
                 Apply
               </Link>
-              <Link href="/privacy" className="text-stone-500 hover:text-stone-900 transition-colors">
+              <Link href="/privacy" className="inline-flex items-center min-h-11 text-stone-500 hover:text-stone-900 transition-colors">
                 Privacy
               </Link>
-              <Link href="#about" className="text-stone-500 hover:text-stone-900 transition-colors">
+              <Link href="#about" className="inline-flex items-center min-h-11 text-stone-500 hover:text-stone-900 transition-colors">
                 About
               </Link>
-              <Link href="#faq" className="text-stone-500 hover:text-stone-900 transition-colors">
+              <Link href="#faq" className="inline-flex items-center min-h-11 text-stone-500 hover:text-stone-900 transition-colors">
                 FAQ
               </Link>
-              <a href="mailto:hello@interestingpeople.com" className="text-stone-500 hover:text-stone-900 transition-colors">
+              <a href="mailto:hello@interestingpeople.com" className="inline-flex items-center min-h-11 text-stone-500 hover:text-stone-900 transition-colors break-all">
                 hello@interestingpeople.com
               </a>
             </div>

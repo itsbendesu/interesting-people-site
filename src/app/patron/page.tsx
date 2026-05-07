@@ -91,15 +91,15 @@ export default function PatronPage() {
     <main className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-1 font-bold text-lg text-stone-900 tracking-tight"
+            className="flex items-center gap-1 font-bold text-base sm:text-lg text-stone-900 tracking-tight min-h-[44px]"
           >
             Interesting People
             <sup className="text-blue-600 text-sm font-bold">4</sup>
           </Link>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Link
               href="/"
               className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors"
@@ -108,7 +108,7 @@ export default function PatronPage() {
             </Link>
             <Link
               href="/apply"
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
             >
               Apply Now
             </Link>
@@ -118,15 +118,15 @@ export default function PatronPage() {
 
       {/* Hero */}
       {step !== "submitted" && (
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20">
-        <div className="max-w-3xl mx-auto px-6">
-          <p className="text-sm font-medium tracking-[0.15em] text-blue-600 uppercase mb-4">
+      <section className="pt-24 pb-10 sm:pt-32 sm:pb-16 md:pt-40 md:pb-20">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6">
+          <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-blue-600 uppercase mb-3 sm:mb-4">
             Patron Program
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold text-stone-900 tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-[2.25rem] leading-[1.1] sm:text-4xl md:text-6xl font-bold text-stone-900 tracking-tight mb-5 sm:mb-6">
             The room gets better when you&apos;re in it.
           </h1>
-          <div className="text-lg md:text-xl text-stone-600 leading-relaxed space-y-4">
+          <div className="text-base sm:text-lg md:text-xl text-stone-600 leading-relaxed space-y-4">
             <p>
               Some of the most interesting people we know are artists, writers, teachers, and founders who can&apos;t drop $10k on a conference. As a patron, every dollar above our costs goes directly toward bringing those people into the room.
             </p>
@@ -142,8 +142,8 @@ export default function PatronPage() {
       )}
 
       {/* Main Content */}
-      <section className={`pb-24 md:pb-32 ${step === "submitted" ? "pt-32 md:pt-40" : ""}`}>
-        <div className="max-w-2xl mx-auto px-6">
+      <section className={`pb-16 sm:pb-24 md:pb-32 ${step === "submitted" ? "pt-24 sm:pt-32 md:pt-40" : ""}`}>
+        <div className="max-w-2xl mx-auto px-5 sm:px-6">
 
           {/* STEP: PRICING */}
           {step === "pricing" && (
@@ -188,13 +188,13 @@ export default function PatronPage() {
                     value={customInput}
                     onChange={(e) => handleCustomChange(e.target.value)}
                     placeholder="Or enter a custom amount"
-                    className="w-full pl-9 pr-4 py-3.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-lg tabular-nums"
+                    className="w-full pl-9 pr-4 py-3.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base sm:text-lg tabular-nums"
                   />
                 </div>
 
                 {/* Big Price Display */}
                 <div className="text-center mb-4 py-4">
-                  <p className="text-5xl md:text-7xl font-bold text-stone-900 tracking-tight tabular-nums">
+                  <p className="text-4xl sm:text-5xl md:text-7xl font-bold text-stone-900 tracking-tight tabular-nums">
                     {formatPrice(value)} <span className="text-xs font-medium tracking-[0.2em] text-stone-400 uppercase">USD</span>
                   </p>
                 </div>
@@ -214,10 +214,10 @@ export default function PatronPage() {
 
                 {/* Hotel toggle */}
                 <div className="flex justify-center mb-8">
-                  <div className="inline-flex bg-stone-100 rounded-full p-1">
+                  <div className="inline-flex bg-stone-100 rounded-full p-1 w-full sm:w-auto">
                     <button
                       onClick={() => setNeedsHotel(true)}
-                      className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                      className={`flex-1 sm:flex-none min-h-[44px] px-4 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
                         needsHotel
                           ? "bg-white text-stone-900 shadow-sm"
                           : "text-stone-500 hover:text-stone-700"
@@ -227,7 +227,7 @@ export default function PatronPage() {
                     </button>
                     <button
                       onClick={() => setNeedsHotel(false)}
-                      className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                      className={`flex-1 sm:flex-none min-h-[44px] px-4 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
                         !needsHotel
                           ? "bg-white text-stone-900 shadow-sm"
                           : "text-stone-500 hover:text-stone-700"
@@ -294,9 +294,10 @@ export default function PatronPage() {
                       id="patron-name"
                       type="text"
                       required
+                      autoComplete="name"
                       value={form.name}
                       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="Your full name"
                     />
                   </div>
@@ -309,9 +310,11 @@ export default function PatronPage() {
                       id="patron-email"
                       type="email"
                       required
+                      autoComplete="email"
+                      inputMode="email"
                       value={form.email}
                       onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="you@example.com"
                     />
                   </div>
@@ -324,9 +327,11 @@ export default function PatronPage() {
                       id="patron-phone"
                       type="tel"
                       required
+                      autoComplete="tel"
+                      inputMode="tel"
                       value={form.phone}
                       onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
@@ -341,7 +346,7 @@ export default function PatronPage() {
                       value={form.bio}
                       onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
                       rows={3}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                       placeholder="What do you do? What are you into? A sentence or two is fine."
                     />
                   </div>
@@ -357,7 +362,7 @@ export default function PatronPage() {
                       value={form.teachSkill}
                       onChange={(e) => setForm((f) => ({ ...f, teachSkill: e.target.value }))}
                       maxLength={300}
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="e.g. Improv comedy, close-up magic, how to tell a story that lands"
                     />
                   </div>
@@ -387,7 +392,7 @@ export default function PatronPage() {
                             onChange={(e) =>
                               setForm((f) => ({ ...f, socials: { ...f.socials, [platform.key]: e.target.value } }))
                             }
-                            className="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
+                            className="flex-1 px-4 py-2.5 border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base sm:text-sm"
                             placeholder={platform.placeholder}
                           />
                         </div>
@@ -475,8 +480,8 @@ export default function PatronPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-stone-100 py-12">
-        <div className="max-w-6xl mx-auto px-6">
+      <footer className="bg-white border-t border-stone-100 py-10 sm:py-12">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div>
               <p className="text-lg font-bold text-stone-900 mb-1">

@@ -28,6 +28,11 @@ function getObserver() {
   return sharedObserver;
 }
 
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export default function FadeIn({
   children,
   delay = 0,
@@ -41,8 +46,16 @@ export default function FadeIn({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [skipAnimation, setSkipAnimation] = useState(false);
 
   useEffect(() => {
+    // If reduced motion is preferred, skip the observer entirely and render
+    // content immediately with no transition.
+    if (prefersReducedMotion()) {
+      setSkipAnimation(true);
+      setVisible(true);
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     const observer = getObserver();
@@ -64,6 +77,14 @@ export default function FadeIn({
     right: "translate3d(20px, 0, 0)",
     none: "translate3d(0, 0, 0)",
   };
+
+  if (skipAnimation) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div

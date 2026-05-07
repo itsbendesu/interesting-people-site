@@ -101,7 +101,7 @@ export default function VideoUploader({
       };
     }
 
-    // Check duration
+    // Check duration. iOS Safari sometimes can't read .mov metadata; if so, allow upload.
     try {
       const duration = await getVideoDuration(file);
       if (duration > maxDurationSec) {
@@ -112,10 +112,9 @@ export default function VideoUploader({
       }
       return { valid: true, duration };
     } catch {
-      return {
-        valid: false,
-        error: "Could not read video file. Please try a different format.",
-      };
+      // If duration probe fails (common on iOS Safari for .mov), let it through
+      // and rely on server-side validation. Better than blocking valid uploads.
+      return { valid: true, duration: 0 };
     }
   };
 
@@ -291,6 +290,9 @@ export default function VideoUploader({
         <video
           src={previewUrl}
           controls
+          playsInline
+          webkit-playsinline="true"
+          preload="metadata"
           className="w-full rounded-lg bg-black aspect-video"
         />
 
@@ -322,7 +324,7 @@ export default function VideoUploader({
 
         <button
           onClick={resetState}
-          className="w-full py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+          className="w-full min-h-[48px] py-3 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 font-medium touch-manipulation"
         >
           Try Again
         </button>
@@ -350,12 +352,17 @@ export default function VideoUploader({
           </div>
 
           {state === "uploading" && (
-            <button
-              onClick={handleCancel}
-              className="mt-4 text-sm text-gray-500 hover:text-gray-700"
-            >
-              Cancel upload
-            </button>
+            <>
+              <p className="mt-3 text-xs text-gray-500">
+                Keep this tab open. Don&apos;t close the browser until upload finishes.
+              </p>
+              <button
+                onClick={handleCancel}
+                className="mt-3 min-h-[44px] px-3 py-2 text-sm text-gray-500 hover:text-gray-700 active:text-gray-900 touch-manipulation"
+              >
+                Cancel upload
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -378,7 +385,8 @@ export default function VideoUploader({
       <input
         ref={fileInputRef}
         type="file"
-        accept="video/mp4,video/quicktime,video/webm"
+        accept="video/mp4,video/quicktime,video/webm,video/*"
+        capture="user"
         onChange={handleInputChange}
         className="hidden"
       />
@@ -391,17 +399,19 @@ export default function VideoUploader({
         </div>
 
         <div>
-          <p className="text-gray-700 font-medium">
+          <p className="text-gray-700 font-medium hidden sm:block">
             Drag and drop your video here
           </p>
-          <p className="text-sm text-gray-500 mt-1">
-            or{" "}
+          <p className="text-gray-700 font-medium sm:hidden">
+            Choose a video to upload
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="inline-flex items-center justify-center min-h-[48px] px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 font-medium touch-manipulation"
             >
-              browse to upload
+              Browse to upload
             </button>
           </p>
         </div>

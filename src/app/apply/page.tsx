@@ -102,10 +102,37 @@ export default function ApplyPage() {
   const MAX_DURATION = 90;
   const PROMPT_DURATION = 45;
 
-  // Scroll error into view when it appears
+  // Scroll error into view when it appears, then focus the first invalid field
   useEffect(() => {
-    if (error && errorRef.current) {
+    if (!error) return;
+    if (errorRef.current) {
       errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    // Map common error messages to the input that needs attention
+    const lower = error.toLowerCase();
+    let targetId: string | null = null;
+    if (lower.includes("name")) targetId = "apply-name";
+    else if (lower.includes("email")) targetId = "apply-email";
+    else if (lower.includes("phone")) targetId = "apply-phone";
+    else if (lower.includes("ticket")) targetId = "apply-ticket-type-label";
+    else if (lower.includes("address")) targetId = "apply-address";
+    else if (lower.includes("victoria")) targetId = "apply-address";
+    else if (lower.includes("heard")) targetId = "apply-heard-about";
+    else if (lower.includes("3 words") || lower.includes("three words")) targetId = "apply-three-words";
+    else if (lower.includes("bio")) targetId = "apply-bio";
+    else if (lower.includes("social") || lower.includes("profile")) targetId = "apply-social-instagram";
+    else if (lower.includes("project") || lower.includes("link")) targetId = "apply-social-instagram";
+    if (targetId) {
+      // Defer to next frame so the scrollIntoView above doesn't fight focus()
+      requestAnimationFrame(() => {
+        const el = document.getElementById(targetId!) as HTMLElement | null;
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (typeof (el as HTMLInputElement).focus === "function") {
+            (el as HTMLInputElement).focus({ preventScroll: true });
+          }
+        }
+      });
     }
   }, [error]);
 
@@ -709,7 +736,7 @@ export default function ApplyPage() {
           <h2 className="font-serif text-xl font-bold text-slate-900 mb-4 text-center">
             Here&apos;s how it works
           </h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               {
                 num: 1,
@@ -727,7 +754,7 @@ export default function ApplyPage() {
                 desc: "Our team watches every video. We\u2019ll get back to you within a few weeks.",
               },
             ].map((item) => (
-              <div key={item.num} className="flex gap-3 p-5 rounded-2xl bg-slate-50">
+              <div key={item.num} className="flex gap-3 p-4 sm:p-5 rounded-2xl bg-slate-50">
                 <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
                   {item.num}
                 </span>
@@ -772,13 +799,13 @@ export default function ApplyPage() {
           >
             {/* Modal header */}
             {step !== "confirmation" && (
-              <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 rounded-t-2xl z-10">
+              <div className="sticky top-0 bg-white border-b border-slate-100 px-4 sm:px-6 py-3 sm:py-4 rounded-t-2xl z-10">
                 <div className="flex items-center justify-between">
                   {stepDots}
                   {canCloseModal && (
                     <button
                       onClick={handleCloseModal}
-                      className="ml-4 text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0"
+                      className="ml-4 -mr-2 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0"
                       aria-label="Close"
                     >
                       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -792,10 +819,10 @@ export default function ApplyPage() {
 
             {/* Confirmation header — just a close button */}
             {step === "confirmation" && (
-              <div className="sticky top-0 bg-white px-6 py-4 rounded-t-2xl z-10 flex justify-end">
+              <div className="sticky top-0 bg-white px-4 sm:px-6 py-3 sm:py-4 rounded-t-2xl z-10 flex justify-end">
                 <button
                   onClick={handleCloseModal}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className="-mr-2 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors"
                   aria-label="Close"
                 >
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -806,16 +833,16 @@ export default function ApplyPage() {
             )}
 
             {/* Modal body */}
-            <div className="px-6 py-8">
+            <div className="px-4 sm:px-6 py-6 sm:py-8">
               {/* Step heading (form steps) */}
               {(step === "basics" || step === "questions" || step === "story") && (
-                <div className="mb-8">
-                  <h2 className="font-serif text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-2">
+                <div className="mb-6 sm:mb-8">
+                  <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight mb-1.5 sm:mb-2">
                     {step === "basics" && "Let\u2019s start with the basics."}
                     {step === "questions" && "A few quick questions."}
                     {step === "story" && "Now tell us your story."}
                   </h2>
-                  <p className="text-slate-500">
+                  <p className="text-sm sm:text-base text-slate-500">
                     {step === "basics" && "No cover letter. No credentials. We want to know what makes you interesting."}
                     {step === "questions" && "Just a couple things so we can get to know you better."}
                     {step === "story" && "This is the fun part\u2014tell us what lights you up."}
@@ -841,9 +868,12 @@ export default function ApplyPage() {
                       <input
                         id="apply-name"
                         type="text"
+                        autoComplete="name"
+                        autoCapitalize="words"
+                        enterKeyHint="next"
                         value={formData.name}
                         onChange={(e) => updateField("name", e.target.value)}
-                        className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                        className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                         placeholder="Jane Smith"
                       />
                     </div>
@@ -855,9 +885,15 @@ export default function ApplyPage() {
                       <input
                         id="apply-email"
                         type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        enterKeyHint="next"
                         value={formData.email}
                         onChange={(e) => updateField("email", e.target.value)}
-                        className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                        className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                         placeholder="jane@example.com"
                       />
                     </div>
@@ -869,9 +905,12 @@ export default function ApplyPage() {
                       <input
                         id="apply-phone"
                         type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        enterKeyHint="next"
                         value={formData.phone}
                         onChange={(e) => updateField("phone", e.target.value)}
-                        className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                        className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                         placeholder="+1 (555) 123-4567"
                       />
                     </div>
@@ -986,7 +1025,7 @@ export default function ApplyPage() {
                                     key={amt}
                                     type="button"
                                     onClick={() => setFormData((prev) => ({ ...prev, patronAmount: amt }))}
-                                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all border flex flex-col items-center ${
+                                    className={`min-h-[56px] px-3 py-3 rounded-lg text-sm font-medium transition-all border flex flex-col items-center justify-center ${
                                       formData.patronAmount === amt
                                         ? "bg-stone-900 text-white border-stone-900"
                                         : "bg-white text-slate-700 border-slate-200 hover:border-slate-300"
@@ -1032,9 +1071,11 @@ export default function ApplyPage() {
                             <input
                               id="apply-scholarship-amount"
                               type="text"
+                              inputMode="text"
+                              enterKeyHint="next"
                               value={formData.scholarshipAmount}
                               onChange={(e) => updateField("scholarshipAmount", e.target.value)}
-                              className="w-full px-4 py-3.5 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-shadow bg-white"
+                              className="w-full px-4 py-3.5 text-base border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-shadow bg-white"
                               placeholder="e.g. $500, $2,000, whatever works"
                             />
                           </div>
@@ -1051,18 +1092,21 @@ export default function ApplyPage() {
                           <input
                             id="apply-address"
                             type="text"
+                            autoComplete="street-address"
+                            autoCapitalize="words"
+                            enterKeyHint="next"
                             value={formData.address}
                             onChange={(e) => updateField("address", e.target.value)}
-                            className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                            className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                             placeholder="Your Victoria, BC address"
                           />
                         </div>
-                        <label className="flex items-start gap-3 cursor-pointer">
+                        <label className="flex items-start gap-3 cursor-pointer py-2 -my-2 min-h-[44px]">
                           <input
                             type="checkbox"
                             checked={formData.localSwear}
                             onChange={(e) => setFormData((prev) => ({ ...prev, localSwear: e.target.checked }))}
-                            className="mt-0.5 h-5 w-5 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
+                            className="mt-1 h-5 w-5 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
                           />
                           <span className="text-sm text-slate-600 leading-relaxed">
                             I solemnly swear I actually live here, in Victoria, as my primary residence. (This will be verified by our team.)
@@ -1108,10 +1152,11 @@ export default function ApplyPage() {
                       <input
                         id="apply-heard-about"
                         type="text"
+                        enterKeyHint="next"
                         value={formData.heardAbout}
                         onChange={(e) => updateField("heardAbout", e.target.value)}
                         maxLength={500}
-                        className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                        className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                         placeholder="Friend, Twitter, newsletter, etc."
                       />
                     </div>
@@ -1124,7 +1169,7 @@ export default function ApplyPage() {
                         <button
                           type="button"
                           onClick={() => setFormData((prev) => ({ ...prev, priorEvents: true }))}
-                          className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+                          className={`min-h-[44px] px-6 py-3 rounded-xl text-base font-medium transition-all ${
                             formData.priorEvents
                               ? "bg-blue-600 text-white"
                               : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -1135,7 +1180,7 @@ export default function ApplyPage() {
                         <button
                           type="button"
                           onClick={() => setFormData((prev) => ({ ...prev, priorEvents: false, priorEventsWhich: [] }))}
-                          className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+                          className={`min-h-[44px] px-6 py-3 rounded-xl text-base font-medium transition-all ${
                             !formData.priorEvents
                               ? "bg-blue-600 text-white"
                               : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -1160,7 +1205,7 @@ export default function ApplyPage() {
                                       : [...prev.priorEventsWhich, event],
                                   }))
                                 }
-                                className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                                className={`min-h-[44px] min-w-[44px] px-5 py-2.5 rounded-xl text-base font-medium transition-all ${
                                   formData.priorEventsWhich.includes(event)
                                     ? "bg-blue-600 text-white"
                                     : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -1181,9 +1226,10 @@ export default function ApplyPage() {
                       <input
                         id="apply-three-words"
                         type="text"
+                        enterKeyHint="next"
                         value={formData.threeWords}
                         onChange={(e) => updateField("threeWords", e.target.value)}
-                        className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                        className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                       />
                     </div>
                   </div>
@@ -1226,9 +1272,10 @@ export default function ApplyPage() {
                       id="apply-bio"
                       value={formData.bio}
                       onChange={(e) => updateField("bio", e.target.value)}
-                      rows={4}
+                      rows={5}
                       maxLength={500}
-                      className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow resize-none bg-white"
+                      enterKeyHint="enter"
+                      className="w-full min-h-[8rem] px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow resize-y bg-white"
                       placeholder="I spend my weekends building mechanical keyboards and arguing about which pizza style is best..."
                     />
                   </div>
@@ -1244,10 +1291,11 @@ export default function ApplyPage() {
                     <input
                       id="apply-teach-skill"
                       type="text"
+                      enterKeyHint="next"
                       value={formData.teachSkill}
                       onChange={(e) => updateField("teachSkill", e.target.value)}
                       maxLength={300}
-                      className="w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                      className="w-full px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                       placeholder="e.g. Improv comedy, close-up magic, how to tell a story that lands"
                     />
                   </div>
@@ -1259,7 +1307,7 @@ export default function ApplyPage() {
                     <p className="text-sm text-slate-500 mb-3">
                       At least one required.
                     </p>
-                    <div className="space-y-3">
+                    <div className="space-y-4 sm:space-y-3">
                       {([
                         { key: "instagram", label: "Instagram", placeholder: "yourhandle" },
                         { key: "x", label: "X (Twitter)", placeholder: "yourhandle" },
@@ -1268,15 +1316,21 @@ export default function ApplyPage() {
                         { key: "youtube", label: "YouTube", placeholder: "yourchannel" },
                         { key: "website", label: "Personal Website", placeholder: "yoursite.com" },
                       ] as const).map((platform) => (
-                        <div key={platform.key} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                          <label htmlFor={`apply-social-${platform.key}`} className="text-sm text-slate-500 sm:w-32 sm:flex-shrink-0">{platform.label}</label>
+                        <div key={platform.key} className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+                          <label htmlFor={`apply-social-${platform.key}`} className="text-sm font-medium text-slate-700 sm:font-normal sm:text-slate-500 sm:w-32 sm:flex-shrink-0">{platform.label}</label>
                           <input
                             id={`apply-social-${platform.key}`}
-                            type="text"
+                            type={platform.key === "website" ? "url" : "text"}
+                            inputMode={platform.key === "website" ? "url" : "text"}
+                            autoComplete={platform.key === "website" ? "url" : "off"}
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            enterKeyHint="next"
                             value={formData.socials[platform.key]}
                             onChange={(e) => updateSocial(platform.key, e.target.value)}
                             maxLength={200}
-                            className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white text-sm"
+                            className="flex-1 px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                             placeholder={platform.placeholder}
                           />
                         </div>
@@ -1295,17 +1349,24 @@ export default function ApplyPage() {
                     {formData.projectLinks.map((link, i) => (
                       <div key={i} className="flex gap-2 mb-2">
                         <input
-                          type="text"
+                          type="url"
+                          inputMode="url"
+                          autoComplete="off"
+                          autoCapitalize="none"
+                          autoCorrect="off"
+                          spellCheck={false}
+                          enterKeyHint="next"
                           value={link}
                           onChange={(e) => updateProjectLink(i, e.target.value)}
-                          className="flex-1 px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+                          className="flex-1 px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
                           placeholder="yourproject.com"
                         />
                         {formData.projectLinks.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeProjectLink(i)}
-                            className="px-3 py-2 text-slate-400 hover:text-red-500 transition-colors"
+                            aria-label="Remove link"
+                            className="flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
@@ -1318,7 +1379,7 @@ export default function ApplyPage() {
                       <button
                         type="button"
                         onClick={addProjectLink}
-                        className="text-sm text-slate-500 hover:text-slate-900 transition-colors mt-1"
+                        className="inline-flex items-center min-h-[44px] py-2 text-sm text-slate-500 hover:text-slate-900 transition-colors mt-1"
                       >
                         + Add another link
                       </button>
@@ -1328,12 +1389,12 @@ export default function ApplyPage() {
                   <div className="h-px bg-slate-100" />
 
                   {/* Privacy consent checkbox */}
-                  <label className="flex items-start gap-4 cursor-pointer">
+                  <label className="flex items-start gap-4 cursor-pointer py-2 -my-2 min-h-[44px]">
                     <input
                       type="checkbox"
                       checked={consentGiven}
                       onChange={(e) => setConsentGiven(e.target.checked)}
-                      className="mt-0.5 h-5 w-5 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
+                      className="mt-1 h-5 w-5 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
                     />
                     <span className="text-sm text-slate-500 leading-relaxed">
                       I understand that my video will be reviewed by the selection team and agree to the{" "}
@@ -1449,7 +1510,7 @@ export default function ApplyPage() {
                               lastPromptStartRef.current = duration;
                               setCurrentPromptIndex(currentPromptIndex + 1);
                             }}
-                            className="text-xs text-slate-400 hover:text-white transition-colors"
+                            className="min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-white transition-colors"
                           >
                             Skip to next question &rarr;
                           </button>

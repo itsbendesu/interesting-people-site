@@ -228,14 +228,17 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
   return (
     <main className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-gray-500 hover:text-gray-700">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <Link
+              href="/admin"
+              className="text-gray-500 hover:text-gray-700 min-h-[44px] -ml-2 px-2 inline-flex items-center shrink-0"
+            >
               &larr; Back
             </Link>
-            <h1 className="text-xl font-bold text-gray-900">{submission.applicant.name}</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 truncate">{submission.applicant.name}</h1>
             <span
-              className={`px-3 py-1 rounded-full text-sm font-medium border ${STATUS_COLORS[submission.status]}`}
+              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border shrink-0 ${STATUS_COLORS[submission.status]}`}
             >
               {submission.status}
             </span>
@@ -243,11 +246,11 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
 
           {/* One-click decision buttons for admins */}
           {isAdmin && (
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-3 sm:flex sm:items-center gap-2">
               <button
                 onClick={() => handleStatusChange("ACCEPTED")}
                 disabled={submission.status === "ACCEPTED" || statusUpdating !== null}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   submission.status === "ACCEPTED"
                     ? "bg-green-600 text-white"
                     : "bg-green-100 text-green-700 hover:bg-green-200"
@@ -258,7 +261,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
               <button
                 onClick={() => handleStatusChange("WAITLIST")}
                 disabled={submission.status === "WAITLIST" || statusUpdating !== null}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   submission.status === "WAITLIST"
                     ? "bg-yellow-600 text-white"
                     : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
@@ -269,7 +272,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
               <button
                 onClick={() => handleStatusChange("REJECTED")}
                 disabled={submission.status === "REJECTED" || statusUpdating !== null}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`px-3 sm:px-4 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   submission.status === "REJECTED"
                     ? "bg-red-600 text-white"
                     : "bg-red-100 text-red-700 hover:bg-red-200"
@@ -290,18 +293,18 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8 pb-32 lg:pb-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Left column - Video and prompt */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
               <h2 className="font-medium text-gray-900 mb-2">Prompt</h2>
-              <p className="text-gray-700 italic text-lg">&ldquo;{submission.prompt.text}&rdquo;</p>
+              <p className="text-gray-700 italic text-base sm:text-lg">&ldquo;{submission.prompt.text}&rdquo;</p>
             </div>
 
             {submission.videoUrl === "friend-invite" ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <div className="flex items-center gap-3">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
+                <div className="flex flex-wrap items-center gap-3">
                   <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
                     Friend Invite
                   </span>
@@ -316,28 +319,28 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                 )}
               </div>
             ) : (
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex justify-between items-center mb-4">
+              <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
                   <h2 className="font-medium text-gray-900">Video Response</h2>
                   <span className="text-sm text-gray-500">
                     {submission.videoDurationSec}s
                   </span>
                 </div>
-                <VideoPlayer src={submission.videoUrl} className="aspect-video rounded-lg overflow-hidden" />
+                <VideoPlayer src={submission.videoUrl} className="aspect-video rounded-lg overflow-hidden w-full" />
               </div>
             )}
 
             {/* Applicant Info */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
               <h2 className="font-medium text-gray-900 mb-4">Applicant Info</h2>
 
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="min-w-0">
                     <p className="text-sm text-gray-500">Email</p>
                     <a
                       href={`mailto:${submission.applicant.email}`}
-                      className="text-indigo-600 hover:text-indigo-700"
+                      className="text-indigo-600 hover:text-indigo-700 break-all"
                     >
                       {submission.applicant.email}
                     </a>
@@ -350,10 +353,12 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Phone</p>
-                    <p className="text-gray-900">{submission.applicant.phone}</p>
+                    <a href={`tel:${submission.applicant.phone}`} className="text-gray-900 hover:text-indigo-600">
+                      {submission.applicant.phone}
+                    </a>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Ticket Type</p>
@@ -409,10 +414,10 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* Right column - Review form and other reviews */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Score Summary */}
             {submission.averageScore !== null && (
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                 <div className="flex justify-between items-center">
                   <h2 className="font-medium text-gray-900">Overall Score</h2>
                   <div className="text-right">
@@ -429,8 +434,8 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Review Form */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex justify-between items-center mb-6">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
                 <h2 className="font-medium text-gray-900">
                   {hasExistingReview ? "Update Your Review" : "Add Your Review"}
                 </h2>
@@ -442,7 +447,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Rubric Sliders */}
                 {(
                   Object.entries(RUBRIC_LABELS) as [
@@ -456,13 +461,37 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                         {rubric.name}
                       </label>
                       <span
-                        className={`text-lg font-semibold ${getScoreColor(reviewForm[key])}`}
+                        className={`text-2xl font-bold ${getScoreColor(reviewForm[key])}`}
                       >
                         {reviewForm[key]}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mb-3">{rubric.description}</p>
-                    <div className="relative">
+
+                    {/* Touch-friendly button picker (mobile) */}
+                    <div className="grid grid-cols-5 gap-1.5 sm:hidden mb-2">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() =>
+                            setReviewForm((f) => ({ ...f, [key]: n }))
+                          }
+                          className={`min-h-[44px] rounded-lg text-base font-semibold transition-colors ${
+                            reviewForm[key] === n
+                              ? "bg-indigo-600 text-white"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          }`}
+                          aria-label={`${rubric.name}: ${n}`}
+                          aria-pressed={reviewForm[key] === n}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Slider (desktop) */}
+                    <div className="relative hidden sm:block">
                       <input
                         type="range"
                         min="1"
@@ -473,32 +502,35 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                           setReviewForm((f) => ({ ...f, [key]: parseInt(e.target.value) }))
                         }
                         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                        aria-label={rubric.name}
                       />
-                      <div className="flex justify-between text-xs text-gray-400 mt-1">
-                        <span>{rubric.low}</span>
-                        <span>{rubric.high}</span>
-                      </div>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-400 mt-1">
+                      <span>{rubric.low}</span>
+                      <span>{rubric.high}</span>
                     </div>
                   </div>
                 ))}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                  <label htmlFor="review-notes" className="block text-sm font-medium text-gray-900 mb-2">
                     Notes <span className="text-gray-400 font-normal">(optional)</span>
                   </label>
                   <textarea
+                    id="review-notes"
                     value={reviewForm.notes}
                     onChange={(e) => setReviewForm((f) => ({ ...f, notes: e.target.value }))}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-4 py-2 text-base sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Private notes about this applicant..."
                   />
                 </div>
 
+                {/* Save button — hidden on mobile (uses sticky bottom version below) */}
                 <button
                   onClick={handleSubmitReview}
                   disabled={saving}
-                  className="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium"
+                  className="hidden lg:block w-full py-3 min-h-[44px] bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium"
                 >
                   {saving ? "Saving..." : hasExistingReview ? "Update Review" : "Save Review"}
                 </button>
@@ -507,7 +539,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
 
             {/* Previous reviews */}
             {submission.reviews.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
                 <h2 className="font-medium text-gray-900 mb-4">
                   All Reviews ({submission.reviews.length})
                 </h2>
@@ -524,13 +556,13 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                     return (
                       <div
                         key={review.id}
-                        className={`border rounded-lg p-4 ${
+                        className={`border rounded-lg p-3 sm:p-4 ${
                           isMyReview ? "border-indigo-200 bg-indigo-50" : "border-gray-100"
                         }`}
                       >
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <p className="font-medium text-gray-900">
+                        <div className="flex justify-between items-start mb-3 gap-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-gray-900 truncate">
                               {review.reviewer.name || review.reviewer.email}
                               {isMyReview && (
                                 <span className="ml-2 text-xs text-indigo-600">(You)</span>
@@ -540,12 +572,12 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                               {new Date(review.createdAt).toLocaleDateString()}
                             </p>
                           </div>
-                          <span className={`text-lg font-bold ${getScoreColor(avgScore)}`}>
+                          <span className={`text-lg font-bold shrink-0 ${getScoreColor(avgScore)}`}>
                             {avgScore.toFixed(1)}
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 text-sm">
                           <div>
                             <p className="text-gray-500 text-xs">Curiosity</p>
                             <p className={`font-medium ${getScoreColor(review.curiosityVsEgo)}`}>
@@ -578,6 +610,25 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Sticky save button on mobile/tablet */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur border-t border-gray-200 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="max-w-7xl mx-auto flex items-center gap-3">
+          <div className="text-right shrink-0">
+            <div className={`text-xl font-bold leading-tight ${getScoreColor(myReviewScore)}`}>
+              {myReviewScore.toFixed(1)}
+            </div>
+            <div className="text-[10px] text-gray-400 uppercase tracking-wide">Your score</div>
+          </div>
+          <button
+            onClick={handleSubmitReview}
+            disabled={saving}
+            className="flex-1 py-3 min-h-[48px] bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 font-medium text-base"
+          >
+            {saving ? "Saving..." : hasExistingReview ? "Update Review" : "Save Review"}
+          </button>
         </div>
       </div>
     </main>

@@ -12,6 +12,10 @@ export default function VideoPlayer({ src, className = "" }: VideoPlayerProps) {
         src={src}
         controls
         playsInline
+        webkit-playsinline="true"
+        x-webkit-airplay="allow"
+        preload="metadata"
+        controlsList="nodownload"
         className="w-full h-full"
       />
     </div>

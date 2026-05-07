@@ -286,14 +286,14 @@ export default function SchedulePage() {
     <main className="min-h-screen bg-stone-50">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/thinkweek"
-            className="font-bold text-lg text-stone-900 tracking-tight"
+            className="font-bold text-base sm:text-lg text-stone-900 tracking-tight inline-flex items-center min-h-[44px]"
           >
             Think Week
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <Link
               href="/thinkweek"
               className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors"
@@ -302,7 +302,7 @@ export default function SchedulePage() {
             </Link>
             <Link
               href="/thinkweek/schedule"
-              className="hidden md:block text-sm text-stone-900 font-medium transition-colors"
+              className="text-sm text-stone-900 font-medium transition-colors min-h-[44px] inline-flex items-center"
             >
               Schedule
             </Link>
@@ -310,7 +310,7 @@ export default function SchedulePage() {
               href="https://luma.com/think-week-2025"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center min-h-[44px] px-4 sm:px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
             >
               Event Page
             </a>
@@ -319,14 +319,14 @@ export default function SchedulePage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-12 md:pt-40 md:pb-16 text-center px-6">
-        <p className="text-sm font-medium text-blue-600 uppercase tracking-widest mb-4 animate-fade-in">
+      <section className="pt-24 pb-8 sm:pt-32 sm:pb-12 md:pt-40 md:pb-16 text-center px-5 sm:px-6">
+        <p className="text-xs sm:text-sm font-medium text-blue-600 uppercase tracking-widest mb-3 sm:mb-4 animate-fade-in">
           April 14–17, 2025
         </p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-stone-900 tracking-tight leading-[1.05]">
+        <h1 className="text-[2.5rem] leading-[1.05] sm:text-4xl md:text-6xl lg:text-7xl font-bold text-stone-900 tracking-tight">
           The Schedule
         </h1>
-        <p className="mt-4 text-lg md:text-xl text-stone-500 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-base sm:text-lg md:text-xl text-stone-500 max-w-2xl mx-auto leading-relaxed">
           Four days of conversations, workshops, and lakeside hangs.
           <br className="hidden md:block" />
           Structured enough to be useful. Loose enough to breathe.
@@ -334,7 +334,7 @@ export default function SchedulePage() {
       </section>
 
       {/* Legend */}
-      <div className="max-w-5xl mx-auto px-6 mb-12">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 mb-10 sm:mb-12">
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
           {[
             { label: "Meals", style: "bg-amber-50 border-amber-200 text-amber-700" },
@@ -354,8 +354,8 @@ export default function SchedulePage() {
       </div>
 
       {/* Schedule */}
-      <div className="max-w-5xl mx-auto px-6 pb-24">
-        <div className="space-y-16">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6 pb-16 sm:pb-24">
+        <div className="space-y-12 sm:space-y-16">
           {schedule.map((day, dayIdx) => (
             <section key={day.date} className="relative">
               {/* Day header */}
@@ -418,15 +418,15 @@ export default function SchedulePage() {
       </div>
 
       {/* Pre-arrival ask */}
-      <section className="bg-stone-900 text-white py-20 px-6">
+      <section className="bg-stone-900 text-white py-14 sm:py-20 px-5 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-sm font-medium text-blue-400 uppercase tracking-widest mb-4">
+          <p className="text-xs sm:text-sm font-medium text-blue-400 uppercase tracking-widest mb-3 sm:mb-4">
             Before you arrive
           </p>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
             Come with one question
           </h2>
-          <p className="mt-4 text-lg text-stone-400 leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-stone-400 leading-relaxed">
             Something you&apos;ve been turning over that doesn&apos;t have an easy answer.
             You&apos;ll carry it through the week.
           </p>
@@ -434,7 +434,7 @@ export default function SchedulePage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 text-center text-sm text-stone-400">
+      <footer className="py-8 px-5 sm:px-6 text-center text-sm text-stone-400">
         <p>
           Think Week 2025 · Shawnigan Lake, BC ·{" "}
           <a

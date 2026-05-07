@@ -10,34 +10,34 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-white">
       {/* Nav */}
       <nav className="border-b border-slate-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="font-serif text-xl font-bold text-slate-900 tracking-tight">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="font-serif text-xl font-bold text-slate-900 tracking-tight inline-flex items-center min-h-[44px]">
             IP4
           </Link>
           <Link
             href="/"
-            className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+            className="inline-flex items-center min-h-[44px] text-sm text-slate-500 hover:text-slate-900 transition-colors"
           >
             &larr; Back to home
           </Link>
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-12 md:py-20">
+      <div className="max-w-3xl mx-auto px-5 sm:px-6 py-10 md:py-20">
 
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-6">Privacy Policy</h1>
+        <h1 className="text-[2rem] leading-tight sm:text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 sm:mb-6">Privacy Policy</h1>
 
-        <p className="text-lg text-slate-500 mb-12">
+        <p className="text-base sm:text-lg text-slate-500 mb-10 sm:mb-12">
           Last updated: {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
         </p>
 
-        <div className="space-y-12">
+        <div className="space-y-10 sm:space-y-12">
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">What We Collect</h2>
-            <p className="text-slate-600 mb-4 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">What We Collect</h2>
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">
               When you apply, we collect the following information:
             </p>
-            <ul className="space-y-3 text-slate-600">
+            <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
                 <span><strong className="text-slate-900">Contact information:</strong> Name, email address, location, and timezone</span>
@@ -58,9 +58,9 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">How We Use Your Data</h2>
-            <p className="text-slate-600 mb-4 leading-relaxed">Your information is used to:</p>
-            <ul className="space-y-3 text-slate-600">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">How We Use Your Data</h2>
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">Your information is used to:</p>
+            <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
                 <span><strong className="text-slate-900">Review your application:</strong> Our team watches your video to evaluate your application</span>
@@ -77,9 +77,9 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Video Handling</h2>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
-              <ul className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Video Handling</h2>
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6">
+              <ul className="space-y-4 text-base">
                 <li className="flex items-start gap-3">
                   <svg className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -109,11 +109,11 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Internal Review Process</h2>
-            <p className="text-slate-600 mb-4 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Internal Review Process</h2>
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">
               Your application is reviewed by our team using the following process:
             </p>
-            <ul className="space-y-3 text-slate-600">
+            <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
                 <span>Each application is watched by at least one human reviewer</span>
@@ -134,8 +134,8 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Data Retention</h2>
-            <ul className="space-y-3 text-slate-600">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Data Retention</h2>
+            <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
                 <span><strong className="text-slate-900">Accepted applicants:</strong> Data retained for the duration of your participation plus 1 year</span>
@@ -156,9 +156,9 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Your Rights</h2>
-            <p className="text-slate-600 mb-4 leading-relaxed">You have the right to:</p>
-            <ul className="space-y-3 text-slate-600">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Your Rights</h2>
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">You have the right to:</p>
+            <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
                 <span><strong className="text-slate-900">Access:</strong> Request a copy of your data</span>
@@ -176,14 +176,14 @@ export default function PrivacyPage() {
                 <span><strong className="text-slate-900">Withdrawal:</strong> Withdraw your application at any time before a decision is made</span>
               </li>
             </ul>
-            <p className="text-slate-600 mt-4 leading-relaxed">
+            <p className="text-base text-slate-600 mt-4 leading-relaxed">
               To exercise these rights, contact us by replying to your application confirmation email.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Security</h2>
-            <p className="text-slate-600 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Security</h2>
+            <p className="text-base text-slate-600 leading-relaxed">
               We implement appropriate technical and organizational measures to protect your data,
               including encryption in transit (TLS) and at rest, access controls, and secure
               authentication for our review team.
@@ -191,16 +191,16 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Changes to This Policy</h2>
-            <p className="text-slate-600 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Changes to This Policy</h2>
+            <p className="text-base text-slate-600 leading-relaxed">
               We may update this policy from time to time. Significant changes will be communicated
               via email to applicants with active applications.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">Contact</h2>
-            <p className="text-slate-600 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Contact</h2>
+            <p className="text-base text-slate-600 leading-relaxed">
               For privacy-related questions or concerns, please contact us by replying to your
               application confirmation email or emailing our team directly.
             </p>

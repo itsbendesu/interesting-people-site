@@ -20,11 +20,28 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-/* Smooth scroll */
+/* Smooth scroll + offset anchor targets so the fixed nav doesn't cover them. */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* nav height (4rem) + small breathing room */
+}
+
+/* Don't let any image push the page wider than the viewport. */
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make sure tap targets feel right on mobile. */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Number accent styling — bold sans-serif, no italics */
@@ -106,4 +123,30 @@ html {
   opacity: 0;
   will-change: transform, opacity;
   transition: opacity 0.2s linear;
+}
+
+/* Slimmer scroll-progress bar on mobile so it stays unobtrusive. */
+@media (max-width: 640px) {
+  #scroll-progress {
+    height: 1.5px;
+  }
+}
+
+/* Honor prefers-reduced-motion across decorative animations. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-hero,
+  .animate-hero-delay-1,
+  .animate-hero-delay-2,
+  .animate-ken-burns,
+  .animate-cta-glow {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }

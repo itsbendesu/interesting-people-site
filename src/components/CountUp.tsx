@@ -18,6 +18,15 @@ export default function CountUp({
     const el = ref.current;
     if (!el) return;
 
+    // Reduced motion: skip the count-up animation entirely.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      el.textContent = `${target}${suffix}`;
+      return;
+    }
+
     // Seed with final value so SSR matches and the number is correct before
     // the observer fires. We'll animate back down to 0 and up again on view.
     el.textContent = `0${suffix}`;

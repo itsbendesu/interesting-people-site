@@ -277,7 +277,7 @@ function SocialLink({ href, label }: { href: string; label: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-stone-400 hover:text-blue-600 transition-colors text-xs font-medium"
+      className="inline-flex items-center min-h-[44px] py-1 text-stone-400 hover:text-blue-600 transition-colors text-xs font-medium"
     >
       {label}
     </a>
@@ -375,14 +375,14 @@ export default function ThinkWeekPage() {
     <main className="min-h-screen bg-stone-50">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/thinkweek"
-            className="font-bold text-lg text-stone-900 tracking-tight"
+            className="font-bold text-base sm:text-lg text-stone-900 tracking-tight inline-flex items-center min-h-[44px]"
           >
             Think Week
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <Link
               href="/thinkweek"
               className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors"
@@ -391,7 +391,7 @@ export default function ThinkWeekPage() {
             </Link>
             <Link
               href="/thinkweek/schedule"
-              className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors"
+              className="text-sm text-stone-500 hover:text-stone-900 transition-colors min-h-[44px] inline-flex items-center"
             >
               Schedule
             </Link>
@@ -399,7 +399,7 @@ export default function ThinkWeekPage() {
               href="https://luma.com/think-week-2025"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center min-h-[44px] px-4 sm:px-5 py-2.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition-all"
             >
               Event Page
             </a>
@@ -408,19 +408,19 @@ export default function ThinkWeekPage() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20 text-center px-6">
-        <p className="text-sm font-medium text-blue-600 uppercase tracking-widest mb-4">
+      <section className="pt-24 pb-10 sm:pt-32 sm:pb-16 md:pt-40 md:pb-20 text-center px-5 sm:px-6">
+        <p className="text-xs sm:text-sm font-medium text-blue-600 uppercase tracking-widest mb-3 sm:mb-4">
           April 14&ndash;17, 2025
         </p>
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-stone-900 tracking-tight leading-[1.05]">
+        <h1 className="text-[2.5rem] leading-[1.05] sm:text-4xl md:text-6xl lg:text-7xl font-bold text-stone-900 tracking-tight">
           Think Week
         </h1>
-        <p className="mt-4 text-lg md:text-xl text-stone-500 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-base sm:text-lg md:text-xl text-stone-500 max-w-2xl mx-auto leading-relaxed">
           A curated retreat for interesting people.
           <br className="hidden md:block" />
           Shawnigan Lake, British Columbia.
         </p>
-        <div className="mt-8 flex items-center justify-center gap-6 text-sm text-stone-400">
+        <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:gap-6 text-sm text-stone-400">
           <span className="flex items-center gap-1.5">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
@@ -447,12 +447,12 @@ export default function ThinkWeekPage() {
       <div className="max-w-24 mx-auto border-t border-stone-200" />
 
       {/* Hosts Section */}
-      <section id="hosts" className="py-16 md:py-20 px-6">
+      <section id="hosts" className="py-12 sm:py-16 md:py-20 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-sm font-medium text-blue-600 uppercase tracking-widest text-center mb-10">
+          <h2 className="text-sm font-medium text-blue-600 uppercase tracking-widest text-center mb-8 sm:mb-10">
             Your Hosts
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             {hosts.map((host) => (
               <AttendeeCard key={host.name} person={host} />
             ))}
@@ -461,12 +461,12 @@ export default function ThinkWeekPage() {
       </section>
 
       {/* Attendees Section */}
-      <section id="attendees" className="py-16 md:py-20 px-6 bg-white">
+      <section id="attendees" className="py-12 sm:py-16 md:py-20 px-5 sm:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-sm font-medium text-blue-600 uppercase tracking-widest text-center mb-3">
             The Attendees
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" style={{ gridAutoRows: "auto" }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6" style={{ gridAutoRows: "auto" }}>
             {guests.map((guest) => (
               <AttendeeCard key={guest.name} person={guest} />
             ))}
@@ -475,7 +475,7 @@ export default function ThinkWeekPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 text-center border-t border-stone-100 bg-stone-50">
+      <footer className="py-10 sm:py-12 px-5 sm:px-6 text-center border-t border-stone-100 bg-stone-50">
         <p className="text-sm text-stone-400">
           Think Week 2025 &middot; Hosted by{" "}
           <a

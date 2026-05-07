@@ -18,16 +18,34 @@ interface ApplicationData {
 }
 
 
+function isIOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    // iPad on iOS 13+ reports as Mac
+    (navigator.platform === "MacIntel" && (navigator as Navigator & { maxTouchPoints?: number }).maxTouchPoints !== undefined && (navigator as Navigator & { maxTouchPoints: number }).maxTouchPoints > 1)
+  );
+}
+
 function getSupportedMimeType(): string {
+  if (typeof MediaRecorder === "undefined") return "";
+  // On iOS Safari, only mp4 (h264/aac) is supported. Try mp4 first there.
+  // Chrome/Firefox prefer webm/vp9. Putting mp4 first and falling back to webm
+  // works on every modern browser including Safari 14.1+.
   const types = [
+    "video/mp4;codecs=h264,aac",
+    "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+    "video/mp4",
     "video/webm;codecs=vp9,opus",
     "video/webm;codecs=vp8,opus",
+    "video/webm;codecs=h264,opus",
     "video/webm",
-    "video/mp4",
   ];
   for (const type of types) {
-    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
-      return type;
+    try {
+      if (MediaRecorder.isTypeSupported(type)) return type;
+    } catch {
+      // ignore
     }
   }
   return "";
@@ -69,9 +87,12 @@ export default function UploadPage() {
   // Upload state
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [uploadStage, setUploadStage] = useState<"idle" | "preparing" | "uploading" | "finalizing">("idle");
+  const [showHeatWarning, setShowHeatWarning] = useState(false);
 
   const MAX_DURATION = 90;
   const PROMPT_DURATION = 45; // Each prompt shown for 45 seconds
+  const HEAT_WARNING_THRESHOLD = 60; // seconds — warn the user past this point
 
   // Fetch application data
   useEffect(() => {
@@ -116,18 +137,44 @@ export default function UploadPage() {
 
   const startCamera = useCallback(async () => {
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setError("Your browser doesn't support video recording. Try the latest Safari (iPhone) or Chrome (Android).");
+        return;
+      }
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: true,
+        video: {
+          facingMode: "user",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+        },
       });
       setStream(mediaStream);
       setError(null);
       setHasStarted(true);
     } catch (err) {
-      if (err instanceof DOMException && err.name === "NotAllowedError") {
-        setError("Camera access was denied. Please check your browser's site settings, allow camera and microphone access, then refresh the page.");
+      if (err instanceof DOMException) {
+        if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+          setError(
+            isIOS()
+              ? "Camera access denied. On iPhone: open Settings → Safari → Camera, set to Allow, then return here and tap Try Again."
+              : "Camera access was denied. Open your browser's site settings, allow camera and microphone, then tap Try Again."
+          );
+        } else if (err.name === "NotFoundError") {
+          setError("No camera was found on this device. Please use a phone or laptop with a working camera.");
+        } else if (err.name === "NotReadableError") {
+          setError("Your camera is being used by another app. Close any other app using the camera (FaceTime, Zoom, etc.) and try again.");
+        } else if (err.name === "OverconstrainedError") {
+          setError("Couldn't find a compatible camera. Try a different device.");
+        } else {
+          setError("Could not access camera. Please try again.");
+        }
       } else {
-        setError("Could not access camera. Please make sure no other app is using your camera, then try again.");
+        setError("Could not access camera. Please try again.");
       }
       console.error("Camera error:", err);
     }
@@ -147,6 +194,8 @@ export default function UploadPage() {
     setDuration(0);
     setCurrentPromptIndex(0);
     setRecordedBlob(null);
+    setShowHeatWarning(false);
+    lastPromptStartRef.current = 0;
 
     const supportedMimeType = getSupportedMimeType();
     mimeTypeRef.current = supportedMimeType;
@@ -156,7 +205,16 @@ export default function UploadPage() {
       recorderOptions.mimeType = supportedMimeType;
     }
 
-    const mediaRecorder = new MediaRecorder(stream, recorderOptions);
+    let mediaRecorder: MediaRecorder;
+    try {
+      mediaRecorder = new MediaRecorder(stream, recorderOptions);
+    } catch (err) {
+      console.error("MediaRecorder failed:", err);
+      setError(
+        "Your browser couldn't start the video recorder. Please update Safari/Chrome to the latest version, or try a different device."
+      );
+      return;
+    }
 
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) {
@@ -182,6 +240,17 @@ export default function UploadPage() {
       tempVideo.src = url;
     };
 
+    mediaRecorder.onerror = (e) => {
+      console.error("MediaRecorder runtime error:", e);
+      setError("Recording stopped unexpectedly. Tap Re-record to try again.");
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setIsRecording(false);
+      isRecordingRef.current = false;
+    };
+
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorder.start(1000);
     setIsRecording(true);
@@ -191,6 +260,10 @@ export default function UploadPage() {
     timerRef.current = setInterval(() => {
       elapsed++;
       setDuration(elapsed);
+
+      if (elapsed === HEAT_WARNING_THRESHOLD) {
+        setShowHeatWarning(true);
+      }
 
       // Cycle to next prompt every PROMPT_DURATION seconds
       const newPromptIndex = Math.min(
@@ -239,6 +312,8 @@ export default function UploadPage() {
     const ext = getExtensionForMimeType(contentType);
     const filename = `recording.${ext}`;
 
+    setUploadStage("preparing");
+
     try {
       // Check if we should use local mode
       const presignRes = await fetch("/api/upload/presign", {
@@ -263,6 +338,7 @@ export default function UploadPage() {
 
       // Handle local upload mode (development)
       if (presignData.localMode) {
+        setUploadStage("uploading");
         const formData = new FormData();
         formData.append("file", new File([recordedBlob], filename, { type: contentType }));
 
@@ -316,6 +392,8 @@ export default function UploadPage() {
         const storeId = parts[3];
         const blobUploadUrl = `https://${storeId.toLowerCase()}.public.blob.vercel-storage.com/${pathname}`;
 
+        setUploadStage("uploading");
+
         // Step 2: PUT file directly to Vercel Blob
         const xhr = new XMLHttpRequest();
 
@@ -348,6 +426,7 @@ export default function UploadPage() {
       }
 
       // Handle R2 upload via XHR (for progress tracking) with retry
+      setUploadStage("uploading");
       const { uploadUrl, key, publicUrl } = presignData;
       const maxRetries = 3;
 
@@ -404,6 +483,7 @@ export default function UploadPage() {
     setSubmitting(true);
     setError(null);
     setUploadProgress(0);
+    setUploadStage("preparing");
 
     try {
       const videoData = await uploadRecordedVideo();
@@ -411,6 +491,8 @@ export default function UploadPage() {
       if (!videoData) {
         throw new Error("Failed to upload video");
       }
+
+      setUploadStage("finalizing");
 
       const res = await fetch("/api/apply/complete", {
         method: "POST",
@@ -431,7 +513,14 @@ export default function UploadPage() {
 
       router.push("/confirmation");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      // Don't clear the recording — let the user retry
+      setError(
+        err instanceof Error
+          ? `${err.message}. Your recording is still here — tap Submit Application to retry.`
+          : "Something went wrong. Tap Submit Application to retry."
+      );
+      setUploadProgress(0);
+      setUploadStage("idle");
     } finally {
       setSubmitting(false);
     }
@@ -448,9 +537,12 @@ export default function UploadPage() {
     setRecordedBlob(null);
     setRecordedUrl(null);
     setUploadProgress(0);
+    setUploadStage("idle");
     setVideoDuration(0);
     setDuration(0);
     setHasStarted(false);
+    setShowHeatWarning(false);
+    setError(null);
   };
 
   if (loading) {
@@ -490,7 +582,10 @@ export default function UploadPage() {
   const hasVideo = recordedBlob !== null;
 
   return (
-    <main className="min-h-screen bg-white">
+    <main
+      className="bg-white"
+      style={{ minHeight: "100dvh" }}
+    >
       {/* Nav */}
       <nav className="border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -532,7 +627,7 @@ export default function UploadPage() {
 
         {/* Prompt - only visible during recording */}
         {isRecording && (
-          <div className="bg-slate-900 rounded-2xl p-8 mb-8">
+          <div className="bg-slate-900 rounded-2xl p-5 sm:p-8 mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-slate-400 font-medium">
                 Question {currentPromptIndex + 1} of {application.prompts.length}
@@ -575,7 +670,7 @@ export default function UploadPage() {
                     lastPromptStartRef.current = duration;
                     setCurrentPromptIndex(currentPromptIndex + 1);
                   }}
-                  className="text-xs text-slate-400 hover:text-white transition-colors"
+                  className="min-h-[44px] px-3 py-2 text-xs sm:text-sm text-slate-400 hover:text-white active:text-white transition-colors touch-manipulation"
                 >
                   Skip to next question &rarr;
                 </button>
@@ -613,7 +708,7 @@ export default function UploadPage() {
         {/* Video area */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 mb-6">
           {!hasStarted && !hasVideo && (
-            <div className="text-center py-12">
+            <div className="text-center py-8 sm:py-12">
               <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-5">
                 <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -625,10 +720,13 @@ export default function UploadPage() {
               </p>
               <button
                 onClick={startCamera}
-                className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="min-h-[56px] px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 active:bg-black transition-all hover:scale-[1.02] active:scale-[0.98] touch-manipulation"
               >
                 Enable Camera
               </button>
+              <p className="mt-4 text-xs text-slate-400 max-w-xs mx-auto">
+                We&apos;ll ask for camera and microphone permission. Tap Allow when prompted.
+              </p>
             </div>
           )}
 
@@ -641,13 +739,15 @@ export default function UploadPage() {
                   autoPlay
                   muted
                   playsInline
+                  webkit-playsinline="true"
+                  disablePictureInPicture
                   className="w-full h-full object-cover"
                 />
                 {isRecording && (
                   <>
-                    <div className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full">
-                      <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                      <span className="font-mono text-sm">{formatTime(duration)} / {formatTime(MAX_DURATION)}</span>
+                    <div className="absolute top-3 left-3 flex items-center gap-2 bg-red-600 text-white px-3 py-2 rounded-full shadow-lg">
+                      <span className="w-2.5 h-2.5 bg-white rounded-full animate-pulse" />
+                      <span className="font-mono text-sm tabular-nums">{formatTime(duration)} / {formatTime(MAX_DURATION)}</span>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-700">
                       <div
@@ -659,13 +759,26 @@ export default function UploadPage() {
                 )}
               </div>
 
+              {/* Heat / battery warning during long recordings */}
+              {showHeatWarning && isRecording && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800 flex items-start gap-2">
+                  <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.74-3l-6.93-12a2 2 0 00-3.48 0L3.34 16a2 2 0 001.73 3z" />
+                  </svg>
+                  <p>
+                    If your phone feels warm, that&apos;s normal — recording uses a lot of power. You&apos;re past 60 seconds, almost done.
+                  </p>
+                </div>
+              )}
+
               <div className="flex justify-center gap-4">
                 {!isRecording && (
                   <button
                     onClick={startRecording}
-                    className="px-8 py-4 bg-red-600 text-white rounded-full font-medium hover:bg-red-700 transition-all flex items-center gap-3"
+                    aria-label="Start recording"
+                    className="min-h-[64px] min-w-[64px] px-8 py-5 bg-red-600 text-white rounded-full font-medium hover:bg-red-700 active:bg-red-800 transition-all flex items-center gap-3 touch-manipulation shadow-lg"
                   >
-                    <span className="w-3 h-3 bg-white rounded-full" />
+                    <span className="w-4 h-4 bg-white rounded-full" />
                     Start Recording
                   </button>
                 )}
@@ -679,7 +792,8 @@ export default function UploadPage() {
                     <button
                       onClick={stopRecording}
                       disabled={!canStop}
-                      className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                      aria-label={canStop ? "Stop recording" : "Recording in progress"}
+                      className="min-h-[64px] px-8 py-5 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 active:bg-black transition-all disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation shadow-lg"
                     >
                       {!onLastQuestion
                         ? `Answer both questions (${PROMPT_DURATION - duration}s)`
@@ -715,8 +829,22 @@ export default function UploadPage() {
                     src={recordedUrl}
                     controls
                     playsInline
+                    webkit-playsinline="true"
+                    preload="metadata"
+                    controlsList="nodownload"
                     className="w-full aspect-[3/4] sm:aspect-video"
                   />
+                </div>
+              )}
+
+              {!submitting && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={clearVideo}
+                    className="min-h-[44px] px-5 py-3 text-sm text-slate-600 hover:text-slate-900 active:text-black underline touch-manipulation"
+                  >
+                    Re-record video
+                  </button>
                 </div>
               )}
             </div>
@@ -724,18 +852,39 @@ export default function UploadPage() {
 
 
           {/* Upload progress */}
-          {submitting && uploadProgress > 0 && uploadProgress < 100 && (
+          {submitting && (
             <div className="mt-6">
               <div className="flex justify-between text-sm text-slate-600 mb-2">
-                <span>Uploading...</span>
-                <span>{uploadProgress}%</span>
+                <span>
+                  {uploadStage === "preparing" && "Preparing upload..."}
+                  {uploadStage === "uploading" && "Uploading video..."}
+                  {uploadStage === "finalizing" && "Finalizing submission..."}
+                  {uploadStage === "idle" && "Working..."}
+                </span>
+                <span className="tabular-nums">
+                  {uploadStage === "uploading" ? `${uploadProgress}%` : ""}
+                </span>
               </div>
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-slate-900 transition-all"
-                  style={{ width: `${uploadProgress}%` }}
+                  className={`h-full bg-slate-900 transition-all ${
+                    uploadStage !== "uploading" ? "animate-pulse" : ""
+                  }`}
+                  style={{
+                    width:
+                      uploadStage === "uploading"
+                        ? `${uploadProgress}%`
+                        : uploadStage === "preparing"
+                        ? "10%"
+                        : uploadStage === "finalizing"
+                        ? "100%"
+                        : "5%",
+                  }}
                 />
               </div>
+              <p className="mt-3 text-xs text-slate-500">
+                Keep this tab open. Don&apos;t lock or close your phone until upload finishes.
+              </p>
             </div>
           )}
         </div>
@@ -746,7 +895,7 @@ export default function UploadPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full px-6 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="w-full min-h-[56px] px-6 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99] touch-manipulation"
             >
               {submitting ? "Submitting..." : "Submit Application"}
             </button>

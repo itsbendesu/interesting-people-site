@@ -17,6 +17,19 @@ export default function HeroParallax({
     const el = ref.current;
     if (!el) return;
 
+    // Skip parallax entirely when:
+    //  - user prefers reduced motion (accessibility / battery)
+    //  - viewport is mobile-sized (parallax tends to look janky on touch
+    //    devices and fights with mobile URL-bar resize behavior)
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (prefersReduced || isMobile) {
+      el.style.willChange = "auto";
+      el.style.transform = "none";
+      el.style.opacity = "1";
+      return;
+    }
+
     function onScroll() {
       cancelAnimationFrame(rafId.current);
       rafId.current = requestAnimationFrame(() => {
@@ -49,7 +62,11 @@ export default function HeroParallax({
   }, []);
 
   return (
-    <div ref={ref} className={className} style={{ willChange: "transform, opacity" }}>
+    <div
+      ref={ref}
+      className={className}
+      style={{ willChange: "transform, opacity", maxWidth: "100%" }}
+    >
       {children}
     </div>
   );
