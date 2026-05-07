@@ -215,12 +215,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         <HeroParallax className="relative z-10 max-w-6xl mx-auto px-6 w-full pb-12 md:pb-24">
           <h1 className="animate-hero text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold text-white leading-[1.05] tracking-tight text-balance [text-shadow:_0_2px_14px_rgba(0,0,0,0.9)]">
-            Make interesting friends.
+            It&apos;s not a conference.
           </h1>
           <p className="animate-hero-delay-1 mt-4 md:mt-5 text-base md:text-xl text-white/80 leading-relaxed max-w-2xl text-pretty [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]">
-            150 people selected for{" "}
-            <span className="text-white font-bold">curiosity</span> and{" "}
-            <span className="text-white font-bold">warmth</span>, hanging out in one of the world&apos;s most beautiful places.
+            150 people, three days in Victoria. No panels, no lanyards, no keynotes &mdash; just the weekend you wish every conference was.
           </p>
           <div className="animate-hero-delay-2 mt-6 md:mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
             <Link
@@ -522,67 +520,6 @@ export default function Home() {
           </div>
         </div>
         </FadeIn>
-      </section>
-
-      {/* The Process */}
-      <section className="bg-white py-16 md:py-32" id="process">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-          <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-6 text-balance">
-            Ten minutes. That&apos;s it.
-          </h2>
-          <p className="text-base md:text-lg text-stone-500 max-w-2xl mb-12 md:mb-16 text-pretty">
-            We made the bar to apply low and the bar to get in high. It&apos;s intentionally
-            simple, intentionally uncomfortable, and intentionally human.
-          </p>
-          </FadeIn>
-
-          <FadeIn delay={100}>
-          <div className="grid md:grid-cols-3 gap-10 md:gap-12">
-            <div>
-              <span className="text-5xl font-bold text-blue-600/20 leading-none">01</span>
-              <h3 className="text-xl font-semibold text-stone-900 mt-3 mb-3">Tell us who you are</h3>
-              <p className="text-stone-500 leading-relaxed">
-                Your name, where you&apos;re from, and a short bio. No resume. No LinkedIn.
-                We want to know what makes you tick, not what makes you look good on paper.
-              </p>
-            </div>
-
-            <div>
-              <span className="text-5xl font-bold text-blue-600/20 leading-none">02</span>
-              <h3 className="text-xl font-semibold text-stone-900 mt-3 mb-3">Record a 90-second video</h3>
-              <p className="text-stone-500 leading-relaxed">
-                Two questions. 45 seconds each. One take. No do-overs. We want to
-                see the real you &mdash; how you think on your feet, not how well you
-                rehearse.
-              </p>
-            </div>
-
-            <div>
-              <span className="text-5xl font-bold text-blue-600/20 leading-none">03</span>
-              <h3 className="text-xl font-semibold text-stone-900 mt-3 mb-3">We watch. We respond.</h3>
-              <p className="text-stone-500 leading-relaxed">
-                A real human watches every single video. No AI screening. No keyword filters.
-                We&apos;ll email you either way &mdash; yes, no, or waitlist.
-              </p>
-            </div>
-          </div>
-          </FadeIn>
-
-          <FadeIn delay={200}>
-          <div className="mt-12 md:mt-16 pt-10 md:pt-12 border-t border-stone-200 flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch sm:items-center">
-            <Link
-              href="/apply"
-              className="inline-flex items-center justify-center min-h-12 px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
-            >
-              Start Your Application
-            </Link>
-            <p className="text-sm text-stone-400 text-center sm:text-left">
-              Applications reviewed on a rolling basis. Apply early.
-            </p>
-          </div>
-          </FadeIn>
-        </div>
       </section>
 
       {/* What We Look For */}
