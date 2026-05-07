@@ -25,7 +25,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
   { name: "Brit MacRae", role: "Actress", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
-  { name: "Ann Makosinski", role: "Inventor", knownFor: "Hollow Flashlight", image: "/images/speakers/ann-makosinski.jpg" },
+  { name: "Ann Makosinski", role: "Filmmaker", knownFor: "Inventor, BBC Host", image: "/images/speakers/ann-makosinski.jpg" },
   { name: "Dr. Ashley Mason", role: "Psychologist", knownFor: "UCSF", image: "/images/speakers/ashley-mason.jpg" },
   { name: "Jaiya Varshney", role: "Founder", knownFor: "Tydra Biomaterial Labs", image: "/images/speakers/jaiya-varshney.jpg" },
   { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
@@ -280,43 +280,6 @@ export default function Home() {
                     <p className="text-xs text-stone-500">{person.knownFor}</p>
                   )}
                 </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Alumni Grid */}
-      <section className="bg-white py-16 md:py-32" id="people">
-        <div className="max-w-6xl mx-auto px-6">
-          <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
-              Some of our alumni.
-            </h2>
-            <p className="text-base md:text-lg text-stone-500 max-w-2xl mb-10 md:mb-12 text-pretty">
-              Founders, comedians, scientists, storytellers, artists, investors. The only thing they have in common is that they&apos;re interesting.
-            </p>
-          </FadeIn>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 sm:gap-6 md:gap-8">
-            {notablePeople.map((person, i) => (
-              <FadeIn key={person.name} delay={i * 40}>
-              <div className="text-center group">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden mx-auto mb-3 relative bg-stone-200 transition-transform duration-300 group-hover:scale-105 will-change-transform">
-                  <Image
-                    src={person.image}
-                    alt={person.name}
-                    fill
-                    className="object-cover grayscale"
-                    sizes="(min-width: 768px) 128px, 96px"
-                    loading="lazy"
-                  />
-                </div>
-                <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
-                <p className="text-xs text-stone-400 text-pretty">
-                  {person.role}{person.knownFor && <> · <span className="text-stone-500">{person.knownFor}</span></>}
-                </p>
-              </div>
               </FadeIn>
             ))}
           </div>
