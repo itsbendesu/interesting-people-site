@@ -103,7 +103,7 @@ const faqs = [
   },
   {
     q: "Why do I have to record a video?",
-    a: "Because resumes lie and bios are performative. A 90-second unedited video tells us more about who you actually are than any written application ever could. It filters for people willing to be real \u2014 and that vulnerability sets the tone for the whole weekend.",
+    a: "Because resumes lie and bios are performative. A 90-second unedited video tells us more about who you actually are than any written application ever could. It filters for people willing to be real \u2014 and that vulnerability sets the tone for the whole gathering.",
   },
   {
     q: "Is this a networking event?",
@@ -119,7 +119,7 @@ const faqs = [
   },
   {
     q: "What do I pack?",
-    a: "Whatever makes you feel like you. The weekend covers a lot of ground \u2014 a casual cocktail party the first night, a sauna and swimming, dinner and an evening of entertainment, a day on the lake and sand, and watersports. Think one or two things you can get wet in, something you\u2019d wear to a nice dinner, and layers for the evenings \u2014 we\u2019re on an island on the Pacific Coast, and it cools down once the sun drops. No dress code. No one\u2019s checking.",
+    a: "Whatever makes you feel like you. The three days cover a lot of ground \u2014 a casual cocktail party the first night, a sauna and swimming, dinner and an evening of entertainment, a day on the lake and sand, and watersports. Think one or two things you can get wet in, something you\u2019d wear to a nice dinner, and layers for the evenings \u2014 we\u2019re on an island on the Pacific Coast, and it cools down once the sun drops. No dress code. No one\u2019s checking.",
   },
   {
     q: "What is your refund policy?",
@@ -219,7 +219,7 @@ export default function Home() {
             It&apos;s not a conference.
           </h1>
           <p className="animate-hero-delay-1 mt-4 md:mt-5 text-base md:text-xl text-white/80 leading-relaxed max-w-2xl text-pretty [text-shadow:_0_2px_10px_rgba(0,0,0,0.8)]">
-            150 people, three days in Victoria. No panels, no lanyards, no keynotes &mdash; just the weekend you wish every conference was.
+            150 people, three days in Victoria. No panels, no lanyards, no keynotes &mdash; just the three days you wish every conference was.
           </p>
           <div className="animate-hero-delay-2 mt-6 md:mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
             <Link
@@ -759,7 +759,7 @@ export default function Home() {
                   <span className="mr-1.5">💛</span>Become a Patron &mdash; $19k+
                 </p>
                 <p className="text-sm text-stone-500 mt-1">
-                  Get the full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make this weekend unforgettable.
+                  Get the full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make these three days unforgettable.
                 </p>
                 <div className="flex gap-1.5 mt-2">
                   <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">🏨 5-star hotel</span>

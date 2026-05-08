@@ -997,7 +997,7 @@ export default function ApplyPage() {
                             <span className={`font-semibold ${formData.ticketType === "patron" ? "text-white" : "text-slate-900"}`}>💛 Patron</span>
                             <span className={`font-semibold ${formData.ticketType === "patron" ? "text-white" : "text-slate-900"}`}>$19,999+</span>
                           </div>
-                          <p className={`text-sm mt-1 ${formData.ticketType === "patron" ? "text-blue-100" : "text-slate-500"}`}>The full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make this weekend unforgettable.</p>
+                          <p className={`text-sm mt-1 ${formData.ticketType === "patron" ? "text-blue-100" : "text-slate-500"}`}>The full VIP experience. Every dollar above cost funds the comedians, musicians, artists, and scientists who make these three days unforgettable.</p>
                           <div className="flex gap-1.5 mt-2">
                             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "patron" ? "bg-white/20 text-white" : "bg-blue-50 text-blue-700"}`}>🏨 5-star hotel</span>
                             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${formData.ticketType === "patron" ? "bg-white/20 text-white" : "bg-amber-50 text-amber-700"}`}>🍽 All meals</span>
@@ -1008,7 +1008,7 @@ export default function ApplyPage() {
                         {formData.ticketType === "patron" && (
                           <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl space-y-4 -mt-1">
                             <p className="text-sm text-slate-700">
-                              <span className="font-bold text-slate-900">Thank you.</span> Every dollar above our costs puts someone in the room &mdash; an artist, a researcher, a founder &mdash; who&apos;d make the weekend better for everyone but can&apos;t afford the ticket.
+                              <span className="font-bold text-slate-900">Thank you.</span> Every dollar above our costs puts someone in the room &mdash; an artist, a researcher, a founder &mdash; who&apos;d make the gathering better for everyone but can&apos;t afford the ticket.
                             </p>
                             <div>
                               <label className="block text-sm font-medium text-slate-900 mb-2">
@@ -1276,7 +1276,7 @@ export default function ApplyPage() {
                       maxLength={500}
                       enterKeyHint="enter"
                       className="w-full min-h-[8rem] px-4 py-3.5 text-base border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow resize-y bg-white"
-                      placeholder="I spend my weekends building mechanical keyboards and arguing about which pizza style is best..."
+                      placeholder="I spend my evenings building mechanical keyboards and arguing about which pizza style is best..."
                     />
                   </div>
 

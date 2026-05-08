@@ -15,7 +15,7 @@ const SCHOLARSHIP_DESCRIPTIONS = [
   "someone brilliant who couldn't otherwise afford to be here",
   "an interesting person who'd never get this chance",
   "someone early in their career who belongs in the room",
-  "a brilliant person who'll remember this weekend for the rest of their life",
+  "a brilliant person who'll remember these three days for the rest of their life",
 ];
 
 function getDescription(index: number) {
@@ -176,7 +176,7 @@ export default function GratisPage() {
               Andrew wants you at IP4 — your ticket is completely covered.
             </p>
             <p>
-              If you need a hotel room, that&apos;s on you (about {formatPrice(HOTEL_COST)} for the weekend).
+              If you need a hotel room, that&apos;s on you (about {formatPrice(HOTEL_COST)} for the three nights).
               If you&apos;re local or have your own accommodations, just select &ldquo;No hotel&rdquo; below.
             </p>
             <p>
@@ -246,7 +246,7 @@ export default function GratisPage() {
                 </p>
                 <p className="text-sm text-stone-500 mb-8">
                   {type === "hotel"
-                    ? `Your hotel runs ${formatPrice(HOTEL_COST)} for the weekend, and each ticket costs us ${formatPrice(TICKET_COST)} to produce. Whatever you can contribute makes a real difference.`
+                    ? `Your hotel runs ${formatPrice(HOTEL_COST)} for the three nights, and each ticket costs us ${formatPrice(TICKET_COST)} to produce. Whatever you can contribute makes a real difference.`
                     : `Each seat costs us ${formatPrice(TICKET_COST)} to produce. Whatever you can contribute makes a real difference — and anything beyond that funds scholarship spots.`
                   }
                 </p>

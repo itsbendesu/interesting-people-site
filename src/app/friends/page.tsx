@@ -14,7 +14,7 @@ const SCHOLARSHIP_DESCRIPTIONS = [
   "someone brilliant who couldn't otherwise afford to be here",
   "an interesting person who'd never get this chance",
   "someone early in their career who belongs in the room",
-  "a brilliant person who'll remember this weekend for the rest of their life",
+  "a brilliant person who'll remember these three days for the rest of their life",
 ];
 
 function getDescription(index: number) {
@@ -165,7 +165,7 @@ export default function FriendsPage() {
               Regular tickets are <span className="font-semibold text-stone-900">$8,999</span> ($5,999 for locals).
               As a friend, you&apos;re invited at a discounted rate starting from our hard cost.
               Anything above cost helps bring comedians, musicians, artists, and scientists
-              into the room — the people who make the weekend unforgettable. All prices in USD.
+              into the room — the people who make these three days unforgettable. All prices in USD.
             </p>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function FriendsPage() {
                   Your friends &amp; family rate
                 </p>
                 <p className="text-sm text-stone-500 mb-8">
-                  Regular tickets are {type === "hotel" ? "$8,999" : "$5,999"}. Anything above our cost funds a scholarship seat for someone who&apos;d make the weekend better for everyone.
+                  Regular tickets are {type === "hotel" ? "$8,999" : "$5,999"}. Anything above our cost funds a scholarship seat for someone who&apos;d make the gathering better for everyone.
                 </p>
 
                 {/* Big Price Display */}
