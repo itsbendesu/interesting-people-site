@@ -44,6 +44,7 @@ const WRAPPER = (content: string) => `
     </div>
     <div style="background:#ffffff;border-radius:16px;padding:32px 28px;border:1px solid #e7e5e4;">
       ${content}
+      <p style="font-size:15px;color:#44403c;line-height:1.6;margin:24px 0 0;">&mdash; The IP4 Team</p>
     </div>
     <div style="margin-top:24px;text-align:center;">
       <p style="font-size:12px;color:#a8a29e;margin:0;">IP Events &mdash; Victoria, BC</p>
