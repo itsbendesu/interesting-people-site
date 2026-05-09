@@ -248,7 +248,7 @@ export default function Home() {
       <section className="bg-white py-16 md:py-32" id="coming">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">IP4 &middot; July 27&ndash;29, 2026</p>
+            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">July 27&ndash;29, 2026</p>
             <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
               Who&apos;s coming this year.
             </h2>
