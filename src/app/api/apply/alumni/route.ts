@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { isAlumniEmail } from "@/lib/alumni-list";
 
 const ALUMNI_PRICE = 6999;
 const ALUMNI_FRIEND_PRICE = 7999;
@@ -25,6 +26,20 @@ export async function POST(request: NextRequest) {
     const data = alumniSchema.parse(body);
 
     const amount = data.ticketType === "alumni" ? ALUMNI_PRICE : ALUMNI_FRIEND_PRICE;
+
+    // Alumni-rate gate: email must be on the curated alumni list.
+    // Alumni-friend tier is open — anyone can apply at that rate.
+    if (data.ticketType === "alumni" && !isAlumniEmail(data.email)) {
+      return NextResponse.json(
+        {
+          error: "ALUMNI_EMAIL_NOT_FOUND",
+          message:
+            "We don't have this email on our IP alumni list. If you were at IP1, IP2, or IP3 and think this is a mistake, email hello@interestingpeople.com and we'll sort it out. If a friend passed this along, they likely meant to send you to /alumni/friend.",
+          friendUrl: "/alumni/friend",
+        },
+        { status: 403 }
+      );
+    }
 
     const existing = await prisma.applicant.findUnique({
       where: { email: data.email },

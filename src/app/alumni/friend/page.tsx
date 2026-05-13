@@ -3,17 +3,16 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const ALUMNI_PRICE = 6999;
+const ALUMNI_FRIEND_PRICE = 7999;
 const REGULAR_PRICE = 8999;
 
-type PriorEvent = "IP3" | "IP2" | "IP1";
-type Step = "form" | "submitted" | "not-on-list";
+type Step = "form" | "submitted";
 
 function formatPrice(amount: number) {
   return "$" + amount.toLocaleString("en-US");
 }
 
-export default function AlumniPage() {
+export default function AlumniFriendPage() {
   const [step, setStep] = useState<Step>("form");
   const [form, setForm] = useState({
     name: "",
@@ -21,7 +20,7 @@ export default function AlumniPage() {
     phone: "",
     bio: "",
     teachSkill: "",
-    priorEvent: "IP3" as PriorEvent,
+    referredBy: "",
     socials: { instagram: "", x: "", linkedin: "", website: "" },
   });
 
@@ -61,20 +60,14 @@ export default function AlumniPage() {
           links: Object.entries(form.socials)
             .filter(([, v]) => v.trim())
             .map(([platform, value]) => normalizeSocialUrl(platform, value)),
-          ticketType: "alumni",
-          priorEvent: form.priorEvent,
+          ticketType: "alumni-friend",
+          referredBy: form.referredBy || undefined,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        if (data.error === "ALUMNI_EMAIL_NOT_FOUND") {
-          setStep("not-on-list");
-          return;
-        }
-        throw new Error(data.message || data.error || "Something went wrong");
-      }
+      if (!res.ok) throw new Error(data.message || data.error || "Something went wrong");
       setStep("submitted");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -104,16 +97,17 @@ export default function AlumniPage() {
         <section className="pt-24 pb-10 sm:pt-32 sm:pb-12 md:pt-40 md:pb-16">
           <div className="max-w-3xl mx-auto px-5 sm:px-6">
             <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-blue-600 uppercase mb-3 sm:mb-4">
-              For IP Alumni
+              Passed along by an IP alum
             </p>
             <h1 className="text-[2.25rem] leading-[1.1] sm:text-4xl md:text-6xl font-bold text-stone-900 tracking-tight mb-5 sm:mb-6">
-              We&apos;d be bummed if you weren&apos;t there.
+              Someone wants you in the room.
             </h1>
             <div className="text-base sm:text-lg md:text-xl text-stone-600 leading-relaxed space-y-4">
               <p>
-                You&apos;ve been before. You know what this is. Regular tickets are{" "}
+                An IP alum sent you here, which means they think you&apos;d make IP4
+                better for everyone in the room. Regular tickets are{" "}
                 <span className="font-semibold text-stone-900">{formatPrice(REGULAR_PRICE)}</span> —
-                your alumni rate is below.
+                your rate is below.
               </p>
             </div>
           </div>
@@ -124,26 +118,30 @@ export default function AlumniPage() {
         <div className="max-w-2xl mx-auto px-5 sm:px-6">
           {step === "form" && (
             <>
-              {/* Price summary */}
               <div className="rounded-2xl border-2 border-blue-600 bg-blue-50 p-6 mb-6 shadow-[0_4px_20px_rgba(37,99,235,0.15)]">
                 <p className="text-xs font-bold tracking-[0.15em] text-blue-600 uppercase mb-2">
-                  Your alumni rate
+                  Friend-of-alumni rate
                 </p>
                 <p className="text-4xl sm:text-5xl font-bold text-stone-900 tabular-nums mb-1">
-                  {formatPrice(ALUMNI_PRICE)}
+                  {formatPrice(ALUMNI_FRIEND_PRICE)}
                 </p>
                 <p className="text-xs text-stone-500">
                   <span className="line-through">{formatPrice(REGULAR_PRICE)}</span>{" "}
-                  regular &middot; save {formatPrice(REGULAR_PRICE - ALUMNI_PRICE)} &middot; hotel included
+                  regular &middot; save {formatPrice(REGULAR_PRICE - ALUMNI_FRIEND_PRICE)} &middot; hotel included
                 </p>
               </div>
 
               <div className="bg-white rounded-2xl border border-stone-200 p-5 md:p-8 shadow-sm">
+                <p className="text-xs font-medium tracking-[0.2em] text-stone-400 uppercase mb-2">A few quick questions</p>
+                <p className="text-sm text-stone-500 mb-8">
+                  We&apos;ll do a quick review — usually within a couple of days.
+                </p>
+
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <label htmlFor="alumni-name" className="block text-sm font-medium text-stone-700 mb-1.5">Name</label>
+                    <label htmlFor="af-name" className="block text-sm font-medium text-stone-700 mb-1.5">Name</label>
                     <input
-                      id="alumni-name" type="text" required autoComplete="name"
+                      id="af-name" type="text" required autoComplete="name"
                       value={form.name}
                       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                       className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -152,11 +150,9 @@ export default function AlumniPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="alumni-email" className="block text-sm font-medium text-stone-700 mb-1.5">
-                      Email <span className="text-stone-400 font-normal">(use the one we know you by)</span>
-                    </label>
+                    <label htmlFor="af-email" className="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
                     <input
-                      id="alumni-email" type="email" required autoComplete="email" inputMode="email"
+                      id="af-email" type="email" required autoComplete="email" inputMode="email"
                       value={form.email}
                       onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                       className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -165,9 +161,9 @@ export default function AlumniPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="alumni-phone" className="block text-sm font-medium text-stone-700 mb-1.5">Phone</label>
+                    <label htmlFor="af-phone" className="block text-sm font-medium text-stone-700 mb-1.5">Phone</label>
                     <input
-                      id="alumni-phone" type="tel" required autoComplete="tel" inputMode="tel"
+                      id="af-phone" type="tel" required autoComplete="tel" inputMode="tel"
                       value={form.phone}
                       onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                       className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -176,40 +172,37 @@ export default function AlumniPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="alumni-prior" className="block text-sm font-medium text-stone-700 mb-1.5">
-                      Which IP did you come to?
+                    <label htmlFor="af-referred" className="block text-sm font-medium text-stone-700 mb-1.5">
+                      Who told you about this? <span className="text-stone-400 font-normal">(the IP alum)</span>
                     </label>
-                    <select
-                      id="alumni-prior"
-                      value={form.priorEvent}
-                      onChange={(e) => setForm((f) => ({ ...f, priorEvent: e.target.value as PriorEvent }))}
-                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
-                    >
-                      <option value="IP3">IP3 (2025)</option>
-                      <option value="IP2">IP2 (2024)</option>
-                      <option value="IP1">IP1 (2023)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="alumni-bio" className="block text-sm font-medium text-stone-700 mb-1.5">
-                      About you <span className="text-stone-400 font-normal">(what are you working on these days?)</span>
-                    </label>
-                    <textarea
-                      id="alumni-bio" required rows={3} maxLength={500}
-                      value={form.bio}
-                      onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
-                      placeholder="A sentence or two is fine."
+                    <input
+                      id="af-referred" type="text" required maxLength={200}
+                      value={form.referredBy}
+                      onChange={(e) => setForm((f) => ({ ...f, referredBy: e.target.value }))}
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      placeholder="Their name"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="alumni-teach" className="block text-sm font-medium text-stone-700 mb-1.5">
+                    <label htmlFor="af-bio" className="block text-sm font-medium text-stone-700 mb-1.5">
+                      About you
+                    </label>
+                    <textarea
+                      id="af-bio" required rows={3} maxLength={500}
+                      value={form.bio}
+                      onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                      className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                      placeholder="What do you do? What are you into?"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="af-teach" className="block text-sm font-medium text-stone-700 mb-1.5">
                       A skill you&apos;d teach <span className="text-stone-400 font-normal">(optional)</span>
                     </label>
                     <input
-                      id="alumni-teach" type="text" maxLength={300}
+                      id="af-teach" type="text" maxLength={300}
                       value={form.teachSkill}
                       onChange={(e) => setForm((f) => ({ ...f, teachSkill: e.target.value }))}
                       className="w-full px-4 py-3 text-base border border-stone-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
@@ -229,11 +222,9 @@ export default function AlumniPage() {
                         { key: "website", label: "Website", placeholder: "yoursite.com" },
                       ] as const).map((platform) => (
                         <div key={platform.key} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                          <label htmlFor={`alumni-social-${platform.key}`} className="text-sm text-stone-500 sm:w-24 sm:flex-shrink-0">
-                            {platform.label}
-                          </label>
+                          <label htmlFor={`af-social-${platform.key}`} className="text-sm text-stone-500 sm:w-24 sm:flex-shrink-0">{platform.label}</label>
                           <input
-                            id={`alumni-social-${platform.key}`}
+                            id={`af-social-${platform.key}`}
                             type="text" maxLength={200}
                             value={form.socials[platform.key]}
                             onChange={(e) => setForm((f) => ({ ...f, socials: { ...f.socials, [platform.key]: e.target.value } }))}
@@ -256,17 +247,10 @@ export default function AlumniPage() {
                     disabled={submitting}
                     className="inline-flex items-center justify-center w-full px-8 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:hover:scale-100"
                   >
-                    {submitting ? "Registering..." : `Register — ${formatPrice(ALUMNI_PRICE)}`}
+                    {submitting ? "Registering..." : `Register — ${formatPrice(ALUMNI_FRIEND_PRICE)}`}
                   </button>
                 </form>
               </div>
-
-              <p className="text-xs text-stone-400 text-center mt-8">
-                Victoria local?{" "}
-                <Link href="/apply" className="text-blue-600 hover:text-blue-700 underline">
-                  The local rate is $5,999 — apply here instead.
-                </Link>
-              </p>
 
               <div className="mt-10 bg-stone-50 rounded-2xl border border-stone-200 p-6 sm:p-8">
                 <p className="text-xs font-medium tracking-[0.2em] text-stone-400 uppercase mb-4">What&apos;s included</p>
@@ -291,66 +275,11 @@ export default function AlumniPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3">You&apos;re in.</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3">We&apos;ve got you.</h2>
               <p className="text-stone-500 leading-relaxed max-w-md mx-auto mb-2">
-                Check your email — we just sent a confirmation and payment link.
+                We&apos;ll do a quick review and follow up shortly with next steps and payment info.
               </p>
               <p className="text-sm text-stone-400">July 27–29, 2026 &middot; Victoria, Canada</p>
-            </div>
-          )}
-
-          {step === "not-on-list" && (
-            <div className="bg-white rounded-2xl border border-stone-200 p-8 md:p-12 shadow-sm">
-              <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-4">
-                We don&apos;t recognize that email.
-              </h2>
-              <p className="text-stone-600 leading-relaxed mb-4">
-                The alumni rate is for people who came to IP1, IP2, or IP3 — and we don&apos;t have{" "}
-                <span className="font-mono text-sm">{form.email}</span> on our list.
-              </p>
-              <p className="text-stone-600 leading-relaxed mb-6">
-                A few possibilities:
-              </p>
-              <ul className="space-y-3 text-stone-600 mb-8">
-                <li className="flex gap-3">
-                  <span className="text-blue-600 font-bold">→</span>
-                  <span>
-                    <strong className="text-stone-900">You&apos;re a friend of an alum.</strong>{" "}
-                    Head to{" "}
-                    <Link href="/alumni/friend" className="text-blue-600 hover:text-blue-700 underline font-medium">
-                      interestingpeople.com/alumni/friend
-                    </Link>{" "}
-                    for the friend rate.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-blue-600 font-bold">→</span>
-                  <span>
-                    <strong className="text-stone-900">You attended, but used a different email.</strong>{" "}
-                    Email{" "}
-                    <a href="mailto:hello@interestingpeople.com" className="text-blue-600 hover:text-blue-700 underline font-medium">
-                      hello@interestingpeople.com
-                    </a>{" "}
-                    and we&apos;ll fix it.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-blue-600 font-bold">→</span>
-                  <span>
-                    <strong className="text-stone-900">New to IP?</strong>{" "}
-                    <Link href="/apply" className="text-blue-600 hover:text-blue-700 underline font-medium">
-                      Apply through the normal flow
-                    </Link>
-                    .
-                  </span>
-                </li>
-              </ul>
-              <button
-                onClick={() => setStep("form")}
-                className="text-sm text-stone-500 hover:text-stone-900 transition-colors"
-              >
-                ← Try a different email
-              </button>
             </div>
           )}
         </div>
