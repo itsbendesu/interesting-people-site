@@ -82,11 +82,13 @@ export async function POST(request: NextRequest) {
     });
 
     const ipBrainUrl = process.env.IP_BRAIN_URL || "https://ipevents.co";
+    const autoAccept = data.ticketType === "alumni";
+
     after(async () => {
       try {
         const headers: Record<string, string> = { "Content-Type": "application/json" };
         if (process.env.WEBHOOK_SECRET) headers["x-webhook-secret"] = process.env.WEBHOOK_SECRET;
-        await fetch(`${ipBrainUrl}/api/events/ip4/applications`, {
+        const createRes = await fetch(`${ipBrainUrl}/api/events/ip4/applications`, {
           method: "POST",
           headers,
           body: JSON.stringify({
@@ -108,6 +110,20 @@ export async function POST(request: NextRequest) {
           }),
           signal: AbortSignal.timeout(5000),
         });
+
+        // Alumni tier: past attendees are auto-accepted (triggers acceptance email + payment link).
+        // Alumni-friend tier: stays in submitted for a quick reviewer check.
+        if (autoAccept && createRes.ok) {
+          const created = (await createRes.json()) as { id?: string; deduplicated?: boolean };
+          if (created.id && !created.deduplicated) {
+            await fetch(`${ipBrainUrl}/api/events/ip4/applications/${created.id}`, {
+              method: "PATCH",
+              headers,
+              body: JSON.stringify({ status: "accepted" }),
+              signal: AbortSignal.timeout(8000),
+            });
+          }
+        }
       } catch (err) {
         console.warn("IPHQ webhook failed:", err instanceof Error ? err.message : "unknown");
       }
@@ -117,6 +133,7 @@ export async function POST(request: NextRequest) {
       success: true,
       submissionId: result.submission.id,
       amount,
+      autoAccepted: autoAccept,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

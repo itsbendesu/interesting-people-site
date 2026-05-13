@@ -536,6 +536,16 @@ export default function AdminDashboard() {
                               Friend
                             </span>
                           )}
+                          {sub.applicant.ticketType === "alumni" && (
+                            <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs font-medium">
+                              Alumni
+                            </span>
+                          )}
+                          {sub.applicant.ticketType === "alumni-friend" && (
+                            <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-xs font-medium">
+                              Alumni·Friend
+                            </span>
+                          )}
                         </div>
                         <div className="text-sm text-gray-500 truncate">{sub.applicant.email}</div>
                       </div>

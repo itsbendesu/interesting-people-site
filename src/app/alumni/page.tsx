@@ -471,11 +471,12 @@ export default function AlumniPage() {
                 </svg>
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3">
-                You&apos;re on the list.
+                {ticketType === "alumni" ? "You're in." : "We've got you."}
               </h2>
               <p className="text-stone-500 leading-relaxed max-w-md mx-auto mb-2">
-                We&apos;ve got your details. We&apos;ll be in touch
-                with next steps and payment info shortly.
+                {ticketType === "alumni"
+                  ? "Check your email — we just sent a confirmation and payment link."
+                  : "We'll do a quick review and follow up shortly with next steps and payment info."}
               </p>
               <p className="text-sm text-stone-400">
                 July 27–29, 2026 &middot; Victoria, Canada
