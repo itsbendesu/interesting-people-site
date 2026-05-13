@@ -1,5 +1,5 @@
 // Generated from /Users/ben/Downloads/ip4_alumni_outreach_ip{3,2}.csv
-// 181 IP1/IP2/IP3 attendees who haven't applied/been accepted for IP4.
+// IP1/IP2/IP3 attendees who haven't applied/been accepted for IP4.
 // Source of truth for the alumni-rate email gate on /api/apply/alumni.
 // Update by re-running the audience-CSV build + regenerating this file.
 
@@ -114,7 +114,6 @@ export const ALUMNI_EMAILS: ReadonlySet<string> = new Set([
   "mike@boylestap.com",
   "mike@waybook.com",
   "millar.smith22@gmail.com",
-  "mjdicks@gmail.com",
   "monica.lim@gmail.com",
   "nash@ok-dope.com",
   "nathan@allegroanalytics.com",
