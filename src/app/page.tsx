@@ -24,7 +24,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
-  { name: "Tom Junod", role: "Writer", knownFor: "Esquire, GQ, Atlantic", image: "/images/speakers/tom-junod.jpg" },
+  { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
   { name: "Brit MacRae", role: "Actress", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
   { name: "Flo Crivello", role: "Founder", knownFor: "Lindy AI", image: "/images/speakers/flo-crivello.jpg" },
   { name: "Osric Chau", role: "Actor", knownFor: "Supernatural", image: "/images/speakers/osric-chau.jpg" },
