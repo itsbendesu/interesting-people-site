@@ -25,7 +25,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
   { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
-  { name: "Brit MacRae", role: "Actress", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
+  { name: "Brit MacRae", role: "Producer", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
   { name: "Flo Crivello", role: "Founder", knownFor: "Lindy AI", image: "/images/speakers/flo-crivello.jpg" },
   { name: "Osric Chau", role: "Actor", knownFor: "Supernatural", image: "/images/speakers/osric-chau.jpg" },
   { name: "Ann Makosinski", role: "Filmmaker", knownFor: "Inventor, BBC Host", image: "/images/speakers/ann-makosinski.jpg" },
