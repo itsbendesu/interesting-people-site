@@ -10,27 +10,33 @@ import HeroParallax from "@/components/HeroParallax";
 
 const comingThisYear: { name: string; role: string; knownFor: string; image?: string }[] = [
   { name: "Tim Heidecker", role: "Comedian", knownFor: "Tim and Eric", image: "/images/speakers/tim-heidecker.jpg" },
+  { name: "Steph Smith", role: "Growth", knownFor: "Nvidia", image: "/images/speakers/steph-smith.jpg" },
   { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
   { name: "Josh Johnson", role: "Comedian", knownFor: "The Daily Show", image: "/images/speakers/josh-johnson.jpg" },
-  { name: "Kevin Rose", role: "Investor", knownFor: "Digg, True Ventures", image: "/images/speakers/kevin-rose.jpg" },
   { name: "Dr. Rhonda Patrick", role: "Scientist", knownFor: "FoundMyFitness", image: "/images/speakers/dr-rhonda-patrick.jpg" },
-  { name: "Steph Smith", role: "Growth", knownFor: "Nvidia", image: "/images/speakers/steph-smith.jpg" },
+  { name: "Kevin Rose", role: "Investor", knownFor: "Digg, True Ventures", image: "/images/speakers/kevin-rose.jpg" },
   { name: "Dan Mangan", role: "Musician", knownFor: "Juno Winner, Side Door", image: "/images/speakers/dan-mangan.jpg" },
+  { name: "Brianne Kimmel", role: "Investor", knownFor: "Worklife Ventures", image: "/images/speakers/brianne-kimmel.jpg" },
   { name: "Matthew Dicks", role: "Storyteller", knownFor: "Storyworthy", image: "/images/speakers/matthew-dicks.jpg" },
   { name: "Jayson Gaignard", role: "Community Builder", knownFor: "Mastermind Talks", image: "/images/speakers/jayson-gaignard.jpg" },
-  { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
-  { name: "Brianne Kimmel", role: "Investor", knownFor: "Worklife Ventures", image: "/images/speakers/brianne-kimmel.jpg" },
-  { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
   { name: "Simran Kaur", role: "Podcast Host", knownFor: "Girls That Invest", image: "/images/speakers/simran-kaur.jpg" },
+  { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
+  { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
-  { name: "Brit MacRae", role: "Actress", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
+  { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
+  { name: "Brit MacRae", role: "Producer", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
+  { name: "Flo Crivello", role: "Founder", knownFor: "Lindy AI", image: "/images/speakers/flo-crivello.jpg" },
+  { name: "Osric Chau", role: "Actor", knownFor: "Supernatural", image: "/images/speakers/osric-chau.jpg" },
   { name: "Ann Makosinski", role: "Filmmaker", knownFor: "Inventor, BBC Host", image: "/images/speakers/ann-makosinski.jpg" },
+  { name: "Mitchell Kucher", role: "Filmmaker", knownFor: "TMS Media", image: "/images/speakers/mitchell-kucher.jpg" },
   { name: "Dr. Ashley Mason", role: "Psychologist", knownFor: "UCSF", image: "/images/speakers/ashley-mason.jpg" },
+  { name: "Giulio Michelon", role: "Founder", knownFor: "Belka", image: "/images/speakers/giulio-michelon.jpg" },
   { name: "Jaiya Varshney", role: "Founder", knownFor: "Tydra Biomaterial Labs", image: "/images/speakers/jaiya-varshney.jpg" },
-  { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
+  { name: "Mike LeBeau", role: "Director of Product", knownFor: "Meta", image: "/images/speakers/mike-lebeau.jpg" },
   { name: "Marine Coursac", role: "Biologist & Photographer", knownFor: "ConnectEarth", image: "/images/speakers/marine-coursac.jpg" },
-  { name: "Tom Junod", role: "Writer", knownFor: "Esquire, Mister Rogers profile", image: "/images/speakers/tom-junod.jpg" },
+  { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
+  { name: "Emma Gilchrist", role: "Co-Founder", knownFor: "The Narwhal", image: "/images/speakers/emma-gilchrist.jpg" },
 ];
 
 function initialsFor(name: string) {
@@ -242,7 +248,7 @@ export default function Home() {
       <section className="bg-white py-16 md:py-32" id="coming">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
-            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">IP4 &middot; July 27&ndash;29, 2026</p>
+            <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">July 27&ndash;29, 2026</p>
             <h2 className="text-3xl md:text-5xl font-bold text-stone-900 tracking-tight mb-4 text-balance">
               Who&apos;s coming this year.
             </h2>
