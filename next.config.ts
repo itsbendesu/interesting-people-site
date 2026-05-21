@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      { source: "/alumni/friends", destination: "/alumni/friend", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
