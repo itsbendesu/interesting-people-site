@@ -22,8 +22,10 @@ npm run db:migrate   # Run Prisma migrations
 npm run db:push      # Push schema to DB without migration
 npm run db:seed      # Seed database
 npm run db:studio    # Open Prisma Studio
-vercel --prod --yes  # Deploy to production via CLI
 ```
+
+## Deploying
+**Deploy by pushing to `main`.** The Vercel project (`folly/interesting-people`) auto-deploys every push to `main`. **Do not run `vercel --prod` from local** — CLI deploys and git-triggered deploys have collided before (May 2026: a CLI-deployed alumni page was overwritten when a separate git push auto-deployed an older tree). Pushing to git is the single source of truth.
 
 ## Project structure
 ```
@@ -64,15 +66,14 @@ src/app/
 ## Environment variables
 - `DATABASE_URL` — PostgreSQL connection string
 - `SESSION_SECRET` — iron-session secret (min 32 chars)
-- R2 vars for production video storage (not yet configured on Vercel):
-  - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`
+- R2 vars for production video storage (configured on Vercel since Feb 2026):
+  - `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`
 
 ## Known issues / TODO
-- Video storage on Vercel is local-only; needs R2 env vars configured for production uploads
 - Deprecated `config` export warning in `src/app/api/upload/route.ts` (harmless, could clean up)
 - `public/uploads/` is gitignored from Vercel via `.vercelignore` (test videos)
 
 ## Deployment
 - **Repo**: github.com/itsbendesu/IP4-application (main branch)
-- **Production URL**: interesting-people.vercel.app
-- **Git email**: ben@follypartners.com (must match Vercel account for CLI deploys)
+- **Production URL**: interestingpeople.com (also ip4.ipevents.co)
+- **Vercel project**: `folly/interesting-people` — auto-deploys on push to `main`
