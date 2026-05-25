@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { after } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isAlumniEmail } from "@/lib/alumni-list";
@@ -99,50 +98,45 @@ export async function POST(request: NextRequest) {
     const ipBrainUrl = process.env.IP_BRAIN_URL || "https://ipevents.co";
     const autoAccept = data.ticketType === "alumni";
 
-    after(async () => {
-      try {
-        const headers: Record<string, string> = { "Content-Type": "application/json" };
-        if (process.env.WEBHOOK_SECRET) headers["x-webhook-secret"] = process.env.WEBHOOK_SECRET;
-        const createRes = await fetch(`${ipBrainUrl}/api/events/ip4/applications`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            ticket_type: data.ticketType,
-            price_override: amount,
-            heard_about: heardAbout,
-            prior_events: data.priorEvent || null,
-            timezone: data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-            bio: data.bio,
-            links: data.links,
-            video_url: null,
-            video_duration_sec: 0,
-            prompt_text: null,
-            source_id: result.submission.id,
-            teach_skill: data.teachSkill || null,
-          }),
-          signal: AbortSignal.timeout(5000),
-        });
-
-        // Alumni tier: past attendees are auto-accepted (triggers acceptance email + payment link).
-        // Alumni-friend tier: stays in submitted for a quick reviewer check.
-        if (autoAccept && createRes.ok) {
-          const created = (await createRes.json()) as { id?: string; deduplicated?: boolean };
-          if (created.id && !created.deduplicated) {
-            await fetch(`${ipBrainUrl}/api/events/ip4/applications/${created.id}`, {
-              method: "PATCH",
-              headers,
-              body: JSON.stringify({ status: "accepted" }),
-              signal: AbortSignal.timeout(8000),
-            });
-          }
-        }
-      } catch (err) {
-        console.warn("IPHQ webhook failed:", err instanceof Error ? err.message : "unknown");
+    // Mirror to IPHQ. For ticket_type=alumni, IPHQ auto-accepts inline and
+    // sends the acceptance email + payment link in the same request — no
+    // follow-up PATCH needed. For alumni-friend, IPHQ leaves it submitted
+    // for a quick reviewer check.
+    //
+    // We run this synchronously (not in after()) so a failure surfaces in
+    // logs immediately and we don't ship "You're in" while the downstream
+    // pipeline is broken. The upstream client already has a generous timeout.
+    try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (process.env.WEBHOOK_SECRET) headers["x-webhook-secret"] = process.env.WEBHOOK_SECRET;
+      const createRes = await fetch(`${ipBrainUrl}/api/events/ip4/applications`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          ticket_type: data.ticketType,
+          price_override: amount,
+          heard_about: heardAbout,
+          prior_events: data.priorEvent || null,
+          timezone: data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+          bio: data.bio,
+          links: data.links,
+          video_url: null,
+          video_duration_sec: 0,
+          prompt_text: null,
+          source_id: result.submission.id,
+          teach_skill: data.teachSkill || null,
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!createRes.ok) {
+        console.error("IPHQ application create failed:", createRes.status, await createRes.text().catch(() => ""));
       }
-    });
+    } catch (err) {
+      console.error("IPHQ application create errored:", err instanceof Error ? err.message : "unknown");
+    }
 
     return NextResponse.json({
       success: true,
