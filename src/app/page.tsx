@@ -22,7 +22,6 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Simran Kaur", role: "Podcast Host", knownFor: "Girls That Invest", image: "/images/speakers/simran-kaur.jpg" },
   { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
   { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
-  { name: "Taryn Jensen", role: "Relationship Lead", knownFor: "Gates Foundation", image: "/images/speakers/taryn-jensen.jpg" },
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
   { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
@@ -37,6 +36,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Mike LeBeau", role: "Director of Product", knownFor: "Meta", image: "/images/speakers/mike-lebeau.jpg" },
   { name: "Marine Coursac", role: "Biologist & Photographer", knownFor: "ConnectEarth", image: "/images/speakers/marine-coursac.jpg" },
   { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
+  { name: "Taryn Jensen", role: "Relationship Lead", knownFor: "Gates Foundation", image: "/images/speakers/taryn-jensen.jpg" },
   { name: "Emma Gilchrist", role: "Co-Founder", knownFor: "The Narwhal", image: "/images/speakers/emma-gilchrist.jpg" },
 ];
 
