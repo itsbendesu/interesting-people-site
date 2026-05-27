@@ -22,11 +22,11 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Simran Kaur", role: "Podcast Host", knownFor: "Girls That Invest", image: "/images/speakers/simran-kaur.jpg" },
   { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
   { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
-  { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
+  { name: "Kate Snyder", role: "Designer", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
   { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
   { name: "Brit MacRae", role: "Producer", knownFor: "KINO", image: "/images/speakers/brit-macrae.jpg" },
-  { name: "Flo Crivello", role: "Founder", knownFor: "Lindy AI", image: "/images/speakers/flo-crivello.jpg" },
+  { name: "Flo Crivello", role: "Founder", knownFor: "Lindy", image: "/images/speakers/flo-crivello.jpg" },
   { name: "Osric Chau", role: "Actor", knownFor: "Supernatural", image: "/images/speakers/osric-chau.jpg" },
   { name: "Ann Makosinski", role: "Filmmaker", knownFor: "Inventor, BBC Host", image: "/images/speakers/ann-makosinski.jpg" },
   { name: "Mitchell Kucher", role: "Filmmaker", knownFor: "TMS Media", image: "/images/speakers/mitchell-kucher.jpg" },
@@ -36,7 +36,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Mike LeBeau", role: "Director of Product", knownFor: "Meta", image: "/images/speakers/mike-lebeau.jpg" },
   { name: "Marine Coursac", role: "Biologist & Photographer", knownFor: "ConnectEarth", image: "/images/speakers/marine-coursac.jpg" },
   { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
-  { name: "Taryn Jensen", role: "Relationship Lead", knownFor: "Gates Foundation", image: "/images/speakers/taryn-jensen.jpg" },
+  { name: "Taryn Jensen", role: "Community Builder", knownFor: "The Giving Pledge", image: "/images/speakers/taryn-jensen.jpg" },
   { name: "Emma Gilchrist", role: "Co-Founder", knownFor: "The Narwhal", image: "/images/speakers/emma-gilchrist.jpg" },
 ];
 
@@ -280,10 +280,14 @@ export default function Home() {
                   </div>
                   <p className="font-semibold text-stone-900 text-sm">{person.name}</p>
                   {person.role && (
-                    <p className="text-xs text-stone-400">{person.role}</p>
+                    <p className={`${person.name === "Taryn Jensen" ? "text-[11px] sm:text-xs whitespace-nowrap" : "text-xs"} text-stone-400`}>
+                      {person.role}
+                    </p>
                   )}
                   {person.knownFor && (
-                    <p className="text-xs text-stone-500">{person.knownFor}</p>
+                    <p className={`${person.name === "Taryn Jensen" ? "text-[11px] sm:text-xs whitespace-nowrap" : "text-xs"} text-stone-500`}>
+                      {person.knownFor}
+                    </p>
                   )}
                 </div>
               </FadeIn>
