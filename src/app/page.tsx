@@ -22,6 +22,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Simran Kaur", role: "Podcast Host", knownFor: "Girls That Invest", image: "/images/speakers/simran-kaur.jpg" },
   { name: "Nick Gray", role: "Author", knownFor: "The 2-Hour Cocktail Party", image: "/images/speakers/nick-gray.jpg" },
   { name: "Rasa Izadnegahdar", role: "Global Health Director", knownFor: "Gates Foundation", image: "/images/speakers/rasa-izadnegahdar.jpg" },
+  { name: "Taryn Jensen", role: "Relationship Lead", knownFor: "Gates Foundation", image: "/images/speakers/taryn-jensen.jpg" },
   { name: "Kate Snyder", role: "Creative Director", knownFor: "Studio Roslyn", image: "/images/speakers/kate-snyder.jpg" },
   { name: "Greg Lansky", role: "Artist", knownFor: "Contemporary Art", image: "/images/speakers/greg-lansky.jpg" },
   { name: "Tom Junod", role: "Writer", knownFor: "GQ, Esquire", image: "/images/speakers/tom-junod.jpg" },
@@ -245,7 +246,7 @@ export default function Home() {
       <TestimonialBlock {...featuredTestimonials[1]} bg="bg-stone-50" />
 
       {/* Coming This Year */}
-      <section className="bg-white py-16 md:py-32" id="coming">
+      <section className="bg-white py-16 md:py-32" id="people">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
             <p className="text-xs sm:text-sm font-medium tracking-[0.15em] text-violet-600 uppercase mb-4">July 27&ndash;29, 2026</p>
@@ -530,7 +531,7 @@ export default function Home() {
       </section>
 
       {/* What We Look For */}
-      <section className="py-16 md:py-32 bg-stone-50">
+      <section className="py-16 md:py-32 bg-stone-50" id="process">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn>
           <div className="flex flex-col md:flex-row md:items-start md:gap-16 mb-12 md:mb-16">
