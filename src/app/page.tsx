@@ -11,7 +11,6 @@ import HeroParallax from "@/components/HeroParallax";
 const comingThisYear: { name: string; role: string; knownFor: string; image?: string }[] = [
   { name: "Tim Heidecker", role: "Comedian", knownFor: "Tim and Eric", image: "/images/speakers/tim-heidecker.jpg" },
   { name: "Steph Smith", role: "Growth", knownFor: "Nvidia", image: "/images/speakers/steph-smith.jpg" },
-  { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
   { name: "Josh Johnson", role: "Comedian", knownFor: "The Daily Show", image: "/images/speakers/josh-johnson.jpg" },
   { name: "Dr. Rhonda Patrick", role: "Scientist", knownFor: "FoundMyFitness", image: "/images/speakers/dr-rhonda-patrick.jpg" },
   { name: "Kevin Rose", role: "Investor", knownFor: "Digg, True Ventures", image: "/images/speakers/kevin-rose.jpg" },
@@ -51,7 +50,6 @@ function initialsFor(name: string) {
 }
 
 const notablePeople = [
-  { name: "Hannibal Buress", role: "Comedian", knownFor: "The Eric Andre Show", image: "/images/speakers/hannibal-buress.jpg" },
   { name: "Sam Reich", role: "CEO", knownFor: "Dropout", image: "/images/speakers/sam-reich.jpg" },
   { name: "Greg Isenberg", role: "CEO", knownFor: "Late Checkout", image: "/images/speakers/greg-isenberg.jpg" },
   { name: "Dr. Rhonda Patrick", role: "Scientist", knownFor: "FoundMyFitness", image: "/images/speakers/dr-rhonda-patrick.jpg" },
