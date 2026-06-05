@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 
 type Step = "basics" | "questions" | "story" | "record" | "confirmation";
 
@@ -103,6 +104,11 @@ export default function ApplyPage() {
   const PROMPT_DURATION = 45;
 
   // Scroll error into view when it appears, then focus the first invalid field
+  // Funnel analytics: log each wizard step a visitor reaches
+  useEffect(() => {
+    if (modalOpen && step !== "confirmation") track("apply_step_view", { step });
+  }, [step, modalOpen]);
+
   useEffect(() => {
     if (!error) return;
     if (errorRef.current) {
@@ -282,6 +288,7 @@ export default function ApplyPage() {
     const err = validateStep(step);
     if (err) {
       setError(err);
+      track("apply_validation_error", { step });
       return;
     }
     setError(null);
@@ -362,10 +369,13 @@ export default function ApplyPage() {
       }
 
       setToken(data.token);
+      track("apply_info_submitted", { ticketType: formData.ticketType });
 
       await fetchApplicationAndRecord(data.token);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
+      track("apply_info_error", { message: message.slice(0, 100) });
     } finally {
       setLoading(false);
     }
@@ -383,6 +393,7 @@ export default function ApplyPage() {
       setHasStarted(true);
     } catch (err) {
       const name = err instanceof DOMException ? err.name : "";
+      track("apply_camera_error", { reason: name || "unknown" });
       if (name === "NotAllowedError") {
         setError("Camera access denied. Please allow camera access in your browser settings and try again.");
       } else if (name === "NotFoundError") {
@@ -446,6 +457,7 @@ export default function ApplyPage() {
 
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorder.start(1000);
+    track("apply_recording_started");
     setIsRecording(true);
     isRecordingRef.current = true;
 
@@ -606,8 +618,11 @@ export default function ApplyPage() {
 
       setStep("confirmation");
       setHasSubmitted(true);
+      track("apply_submitted", { durationSec: videoDuration || duration });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      setError(message);
+      track("apply_video_error", { message: message.slice(0, 100) });
     } finally {
       setSubmitting(false);
     }
@@ -771,7 +786,7 @@ export default function ApplyPage() {
         {/* CTA */}
         <div className="text-center">
           <button
-            onClick={() => { setStep(findFirstIncompleteStep()); setModalOpen(true); }}
+            onClick={() => { setStep(findFirstIncompleteStep()); setModalOpen(true); track("apply_opened"); }}
             disabled={hasSubmitted}
             className={`px-10 py-3.5 rounded-full font-medium text-lg transition-all ${
               hasSubmitted
