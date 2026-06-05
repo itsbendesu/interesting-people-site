@@ -74,6 +74,6 @@ src/app/
 - `public/uploads/` is gitignored from Vercel via `.vercelignore` (test videos)
 
 ## Deployment
-- **Repo**: github.com/itsbendesu/IP4-application (main branch)
+- **Repo**: github.com/itsbendesu/interesting-people-site (main branch; renamed from IP4-application 2026-06-04)
 - **Production URL**: interestingpeople.com (also ip4.ipevents.co)
 - **Vercel project**: `folly/interesting-people` — auto-deploys on push to `main`

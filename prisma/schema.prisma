@@ -64,6 +64,10 @@ model PendingApplication {
   bio               String
   teachSkill        String?  // Optional: a skill they'd share with the group
   links             Json?
+  // Present in the prod DB (boolean, default false). Kept here so the committed
+  // schema matches prod and a future `prisma db push` doesn't destructively drop
+  // it. Not currently used by any code in this repo.
+  emailVerified     Boolean  @default(false)
   prompt            Prompt   @relation(fields: [promptId], references: [id])
   promptId      String
   expiresAt     DateTime // Application expires if video not uploaded
@@ -100,6 +104,27 @@ model Applicant {
   @@index([email])
   @@index([createdAt(sort: Desc)])
   @@index([ticketType])
+}
+
+// ============================================================================
+// APPLICATION LEADS (captured at step 1 — before the full written form)
+// ============================================================================
+// Lightweight early capture: written the moment a visitor enters a valid name +
+// email on the first step, so we can recover people who quit before finishing.
+// Completely separate from PendingApplication/Applicant so it never touches the
+// video-upload flow. Recovery list = leads whose email is NOT in Applicant.
+model ApplicationLead {
+  id         String   @id @default(cuid())
+  name       String   @default("")
+  email      String   @unique
+  phone      String   @default("")
+  ticketType String   @default("") // "local", "regular", "vip", "patron", "scholarship"
+  lastStep   String   @default("basics") // furthest wizard step reached
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt(sort: Desc)])
 }
 
 // ============================================================================

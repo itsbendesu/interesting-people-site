@@ -109,6 +109,39 @@ export default function ApplyPage() {
     if (modalOpen && step !== "confirmation") track("apply_step_view", { step });
   }, [step, modalOpen]);
 
+  // Early lead capture: persist name + email the moment they're valid on step 1,
+  // so people who quit before finishing the form (or the video) leave something
+  // behind to follow up on. Debounced, fire-and-forget, never blocks the UI.
+  const lastLeadRef = useRef("");
+  useEffect(() => {
+    if (!modalOpen || step === "confirmation") return;
+    const name = formData.name.trim();
+    const email = formData.email.trim();
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!name || !emailValid || formData.website) return; // need both; skip honeypot
+
+    const signature = `${name}|${email}|${formData.phone}|${formData.ticketType}|${step}`;
+    if (signature === lastLeadRef.current) return;
+
+    const t = setTimeout(() => {
+      lastLeadRef.current = signature;
+      fetch("/api/apply/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          name,
+          email,
+          phone: formData.phone || undefined,
+          ticketType: formData.ticketType || undefined,
+          lastStep: step,
+          website: formData.website,
+        }),
+      }).catch(() => {});
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [modalOpen, step, formData.name, formData.email, formData.phone, formData.ticketType, formData.website]);
+
   useEffect(() => {
     if (!error) return;
     if (errorRef.current) {

@@ -90,6 +90,8 @@ export function getRateLimitIdentifier(request: Request): string {
 
 export const RATE_LIMITS = {
   application: { windowMs: 60 * 60 * 1000, maxRequests: 10 },
+  // Step-1 lead capture fires (debounced) as the user types, so allow more.
+  lead: { windowMs: 60 * 60 * 1000, maxRequests: 40 },
   presign: { windowMs: 10 * 60 * 1000, maxRequests: 30 },
   upload: { windowMs: 60 * 60 * 1000, maxRequests: 10 },
 } as const;
