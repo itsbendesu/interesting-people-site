@@ -28,10 +28,21 @@ export async function POST(request: NextRequest) {
       where: { email: data.email },
     });
     if (existing) {
-      return NextResponse.json(
-        { error: "Unable to process your registration. Please contact hello@interestingpeople.com if you need help." },
-        { status: 400 }
-      );
+      // Idempotent: this email is already registered — almost always the same
+      // person retrying after a cosmetic error (the first submit committed, then
+      // the UI showed a failure). Returning a 400 here gave them a scary
+      // dead-end and permanently blocked every retry. Instead treat it as
+      // success so the page shows the confirmation. We do NOT create a duplicate
+      // or re-fire the IPHQ webhook (the original registration already did).
+      const priorSubmission = await prisma.submission.findFirst({
+        where: { applicantId: existing.id },
+        select: { id: true },
+      });
+      return NextResponse.json({
+        success: true,
+        alreadyRegistered: true,
+        submissionId: priorSubmission?.id ?? null,
+      });
     }
 
     // Grab any active prompt (required FK on Submission)
