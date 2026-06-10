@@ -5,12 +5,19 @@ import { prisma } from "@/lib/prisma";
 import { verifyUpload, deleteUpload, isR2Configured } from "@/lib/r2";
 import { sendEmail, applicationConfirmationEmail } from "@/lib/email";
 
+// The video step has been removed from the application flow — submissions
+// finalize without a video. Video fields are still accepted for backwards
+// compatibility (e.g. an old recording page left open in a tab mid-deploy).
 const completeSchema = z.object({
   token: z.string().min(1),
-  videoKey: z.string().min(1),
-  videoUrl: z.string().min(1), // Accepts both full URLs and local paths like /uploads/x.webm
-  videoDurationSec: z.number().min(1).max(120).optional().default(1),
+  videoKey: z.string().min(1).optional(),
+  videoUrl: z.string().min(1).optional(), // Accepts both full URLs and local paths like /uploads/x.webm
+  videoDurationSec: z.number().min(1).max(120).optional(),
 });
+
+// Sentinel stored in Submission.videoUrl (a required column) when there is no
+// video — same pattern as "friend-invite" and "alumni-outreach".
+const NO_VIDEO = "no-video";
 
 export async function POST(request: NextRequest) {
   let videoKey: string | null = null;
@@ -20,14 +27,15 @@ export async function POST(request: NextRequest) {
 
     // Coerce videoDurationSec to a number with fallback
     if (body.videoDurationSec === undefined || body.videoDurationSec === null) {
-      body.videoDurationSec = 1;
+      delete body.videoDurationSec;
     } else {
       const parsed = Number(body.videoDurationSec);
-      body.videoDurationSec = Number.isFinite(parsed) ? parsed : 1;
+      if (Number.isFinite(parsed)) body.videoDurationSec = parsed;
+      else delete body.videoDurationSec;
     }
 
     const data = completeSchema.parse(body);
-    videoKey = data.videoKey;
+    videoKey = data.videoKey ?? null;
 
     // Find pending application
     const pending = await prisma.pendingApplication.findUnique({
@@ -53,15 +61,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify video exists in R2 (skip for Vercel Blob URLs)
-    const isBlobUrl = data.videoUrl.includes(".vercel-storage.com") || data.videoUrl.includes(".blob.vercel-storage.com");
-    if (isR2Configured() && !isBlobUrl) {
-      const uploadStatus = await verifyUpload(data.videoKey);
-      if (!uploadStatus.exists) {
-        return NextResponse.json(
-          { error: "Video upload not found. Please try recording again." },
-          { status: 404 }
-        );
+    // Legacy path: if a video was supplied, verify it exists in R2 (skip for
+    // Vercel Blob URLs). No-video submissions skip this entirely.
+    if (data.videoUrl && data.videoKey) {
+      const isBlobUrl = data.videoUrl.includes(".vercel-storage.com") || data.videoUrl.includes(".blob.vercel-storage.com");
+      if (isR2Configured() && !isBlobUrl) {
+        const uploadStatus = await verifyUpload(data.videoKey);
+        if (!uploadStatus.exists) {
+          return NextResponse.json(
+            { error: "Video upload not found. Please try recording again." },
+            { status: 404 }
+          );
+        }
       }
     }
 
@@ -100,8 +111,8 @@ export async function POST(request: NextRequest) {
         data: {
           applicantId: applicant.id,
           promptId: pending.promptId,
-          videoUrl: data.videoUrl,
-          videoDurationSec: Math.round(data.videoDurationSec),
+          videoUrl: data.videoUrl ?? NO_VIDEO,
+          videoDurationSec: data.videoDurationSec ? Math.round(data.videoDurationSec) : 0,
           status: "SUBMITTED",
         },
       });
@@ -141,10 +152,10 @@ export async function POST(request: NextRequest) {
             prior_events: pending.priorEvents,
             role_company: pending.roleCompany,
             links: pending.links,
-            video_url: data.videoUrl,
-            video_duration_sec: Math.round(data.videoDurationSec),
-            prompt_text: prompt?.text || null,
-            prompt_texts: allActivePrompts.map((p) => p.text),
+            video_url: data.videoUrl ?? null,
+            video_duration_sec: data.videoDurationSec ? Math.round(data.videoDurationSec) : null,
+            prompt_text: data.videoUrl ? prompt?.text || null : null,
+            prompt_texts: data.videoUrl ? allActivePrompts.map((p) => p.text) : null,
             source_id: result.submission.id,
             teach_skill: pending.teachSkill || null,
           }),

@@ -5,7 +5,7 @@ import { checkRateLimit, getRateLimitIdentifier, RATE_LIMITS } from "@/lib/rate-
 
 // Early "lead" capture. Called (debounced) from the apply wizard the moment a
 // visitor has entered a valid name + email on step 1 — well before they finish
-// the written form or record a video. Idempotent upsert keyed by email.
+// the written form. Idempotent upsert keyed by email.
 //
 // This NEVER blocks the applicant: every failure path returns 200 so the wizard
 // UI is unaffected. It also never overwrites richer captured data with blanks.

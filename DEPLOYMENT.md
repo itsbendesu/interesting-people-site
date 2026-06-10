@@ -51,7 +51,7 @@ npm run db:seed
 ### Create R2 Bucket
 
 1. Go to Cloudflare Dashboard > R2
-2. Create a new bucket named `interesting-people-videos`
+2. Create a new bucket named `interesting-people-videos` *(legacy — new applications no longer upload videos; R2 only serves old submissions)*
 3. Note your Account ID from the URL
 
 ### Configure Public Access

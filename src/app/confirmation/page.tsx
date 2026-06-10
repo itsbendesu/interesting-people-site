@@ -25,8 +25,8 @@ export default function ConfirmationPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-500 max-w-md mx-auto leading-relaxed">
-            Thanks for putting yourself out there. We watch every single video
-            and will be in touch.
+            Thanks for putting yourself out there. We read every single
+            application and will be in touch.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export default function ConfirmationPage() {
           {[
             {
               step: "1",
-              title: "We watch your video",
+              title: "We read your application",
               desc: "A real human (not an AI) reviews every application. We look for curiosity, participation, and emotional intelligence.",
             },
             {

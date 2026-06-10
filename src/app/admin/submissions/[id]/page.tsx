@@ -297,19 +297,34 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Left column - Video and prompt */}
           <div className="space-y-4 sm:space-y-6">
-            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-              <h2 className="font-medium text-gray-900 mb-2">Prompt</h2>
-              <p className="text-gray-700 italic text-base sm:text-lg">&ldquo;{submission.prompt.text}&rdquo;</p>
-            </div>
+            {/* The prompt was only answered on video — hide it for no-video submissions */}
+            {/^(https?:)?\//.test(submission.videoUrl) && (
+              <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+                <h2 className="font-medium text-gray-900 mb-2">Prompt</h2>
+                <p className="text-gray-700 italic text-base sm:text-lg">&ldquo;{submission.prompt.text}&rdquo;</p>
+              </div>
+            )}
 
-            {submission.videoUrl === "friend-invite" ? (
+            {/* Sentinel videoUrl values mark submissions with no video:
+                "friend-invite", "alumni-outreach", and "no-video" (the video
+                step was removed from the application flow). Only legacy
+                submissions have a real, playable URL. */}
+            {!/^(https?:)?\//.test(submission.videoUrl) ? (
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                    Friend Invite
+                    {submission.videoUrl === "friend-invite"
+                      ? "Friend Invite"
+                      : submission.videoUrl === "alumni-outreach"
+                        ? "Alumni"
+                        : "No Video"}
                   </span>
                   <p className="text-sm text-blue-600">
-                    Invited by Andrew — no video application required
+                    {submission.videoUrl === "friend-invite"
+                      ? "Invited by Andrew — no video application required"
+                      : submission.videoUrl === "alumni-outreach"
+                        ? "Past attendee — no video application required"
+                        : "Submitted after the video step was removed"}
                   </p>
                 </div>
                 {submission.applicant.scholarshipAmount && (

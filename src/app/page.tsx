@@ -107,10 +107,6 @@ const faqs = [
     a: "Around 150. Small enough to meet everyone, large enough to be surprised. We\u2019re deliberate about the mix \u2014 ages, backgrounds, geographies, industries.",
   },
   {
-    q: "Why do I have to record a video?",
-    a: "Because resumes lie and bios are performative. A 90-second unedited video tells us more about who you actually are than any written application ever could. It filters for people willing to be real \u2014 and that vulnerability sets the tone for the whole gathering.",
-  },
-  {
     q: "Is this a networking event?",
     a: "God no. Networking is for guys named Chadwick who hand out business cards at funerals. This is about making actual friends with people who are interesting and kind. If you\u2019re here to collect contacts, this isn\u2019t for you.",
   },

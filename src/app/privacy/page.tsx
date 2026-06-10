@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Privacy Policy - Interesting People",
-  description: "How we handle your data and video submissions",
+  description: "How we handle your application data",
 };
 
 export default function PrivacyPage() {
@@ -48,7 +48,7 @@ export default function PrivacyPage() {
               </li>
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
-                <span><strong className="text-slate-900">Video submission:</strong> A video response to one of our prompts (up to 90 seconds)</span>
+                <span><strong className="text-slate-900">Video submission (legacy):</strong> Applications no longer include a video. Videos submitted under the previous application flow are retained as described below</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
             <ul className="space-y-3 text-base text-slate-600">
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
-                <span><strong className="text-slate-900">Review your application:</strong> Our team watches your video to evaluate your application</span>
+                <span><strong className="text-slate-900">Review your application:</strong> Our team reads your responses to evaluate your application</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-slate-400">—</span>
@@ -77,7 +77,10 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Video Handling</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-3 sm:mb-4">Video Handling (Previous Applications)</h2>
+            <p className="text-base text-slate-600 mb-4 leading-relaxed">
+              The application no longer asks for a video. For videos submitted under the previous application flow:
+            </p>
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6">
               <ul className="space-y-4 text-base">
                 <li className="flex items-start gap-3">

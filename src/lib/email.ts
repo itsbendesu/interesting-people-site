@@ -63,7 +63,7 @@ export function applicationConfirmationEmail(name: string) {
         Your application for Interesting People 4 has been received. Thanks for putting yourself out there.
       </p>
       <p style="font-size:15px;color:#44403c;line-height:1.6;margin:0 0 12px;">
-        A real human watches every single video &mdash; no AI screening, no keyword filters. We&rsquo;ll get back to you within a few weeks with a yes, no, or waitlist.
+        A real human reads every single application &mdash; no AI screening, no keyword filters. We&rsquo;ll get back to you within a few weeks with a yes, no, or waitlist.
       </p>
       <p style="font-size:15px;color:#44403c;line-height:1.6;margin:0;">
         In the meantime, sit tight. We&rsquo;ll be in touch.

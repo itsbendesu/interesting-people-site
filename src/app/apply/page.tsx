@@ -1,50 +1,16 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 
-type Step = "basics" | "questions" | "story" | "record" | "confirmation";
-
-interface Prompt {
-  id: string;
-  text: string;
-}
-
-interface ApplicationData {
-  id: string;
-  name: string;
-  email: string;
-  prompts: Prompt[];
-  expiresAt: string;
-}
-
-function getSupportedMimeType(): string {
-  const types = [
-    "video/webm;codecs=vp9,opus",
-    "video/webm;codecs=vp8,opus",
-    "video/webm",
-    "video/mp4",
-  ];
-  for (const type of types) {
-    if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(type)) {
-      return type;
-    }
-  }
-  return "";
-}
-
-function getExtensionForMimeType(mimeType: string): string {
-  if (mimeType.startsWith("video/mp4")) return "mp4";
-  return "webm";
-}
+type Step = "basics" | "questions" | "story" | "confirmation";
 
 export default function ApplyPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState<Step>("basics");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -78,40 +44,14 @@ export default function ApplyPage() {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
 
-  // Recording state
-  const [application, setApplication] = useState<ApplicationData | null>(null);
-  const [hasStarted, setHasStarted] = useState(false);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
-  const [duration, setDuration] = useState(0);
-  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoDuration, setVideoDuration] = useState(0);
-  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
-
-  // Recording refs
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const isRecordingRef = useRef(false);
-  const mimeTypeRef = useRef("");
-  const lastPromptStartRef = useRef(0);
-
-  const MAX_DURATION = 90;
-  const PROMPT_DURATION = 45;
-
-  // Scroll error into view when it appears, then focus the first invalid field
   // Funnel analytics: log each wizard step a visitor reaches
   useEffect(() => {
     if (modalOpen && step !== "confirmation") track("apply_step_view", { step });
   }, [step, modalOpen]);
 
   // Early lead capture: persist name + email the moment they're valid on step 1,
-  // so people who quit before finishing the form (or the video) leave something
-  // behind to follow up on. Debounced, fire-and-forget, never blocks the UI.
+  // so people who quit before finishing the form leave something behind to
+  // follow up on. Debounced, fire-and-forget, never blocks the UI.
   const lastLeadRef = useRef("");
   useEffect(() => {
     if (!modalOpen || step === "confirmation") return;
@@ -211,25 +151,6 @@ export default function ApplyPage() {
       window.removeEventListener("keydown", handleKey);
     };
   }, [modalOpen, step, formData.name, formData.email]);
-
-  // Cleanup stream on unmount
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [stream]);
-
-  // Attach stream to video element when stream changes
-  useEffect(() => {
-    if (stream && videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
 
   const updateField = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -339,18 +260,6 @@ export default function ApplyPage() {
     }
   };
 
-  // Fetch application data and transition to record step
-  const fetchApplicationAndRecord = async (appToken: string) => {
-    const res = await fetch(`/api/apply/${appToken}`);
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to load application");
-    }
-    setApplication(data);
-    setError(null);
-    setStep("record");
-  };
-
   const handleSubmitInfo = async (e: React.FormEvent) => {
     e.preventDefault();
     const err = validateStep("story");
@@ -401,10 +310,24 @@ export default function ApplyPage() {
         throw new Error(data.error || "Failed to start application");
       }
 
-      setToken(data.token);
       track("apply_info_submitted", { ticketType: formData.ticketType });
 
-      await fetchApplicationAndRecord(data.token);
+      // Finalize immediately — there is no video step anymore.
+      const completeRes = await fetch("/api/apply/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: data.token }),
+      });
+
+      const completeData = await completeRes.json();
+
+      if (!completeRes.ok) {
+        throw new Error(completeData.error || "Failed to submit application");
+      }
+
+      setStep("confirmation");
+      setHasSubmitted(true);
+      track("apply_submitted", { ticketType: formData.ticketType });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong";
       setError(message);
@@ -414,286 +337,19 @@ export default function ApplyPage() {
     }
   };
 
-  // Camera / recording functions
-  const startCamera = useCallback(async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: true,
-      });
-      setStream(mediaStream);
-      setError(null);
-      setHasStarted(true);
-    } catch (err) {
-      const name = err instanceof DOMException ? err.name : "";
-      track("apply_camera_error", { reason: name || "unknown" });
-      if (name === "NotAllowedError") {
-        setError("Camera access denied. Please allow camera access in your browser settings and try again.");
-      } else if (name === "NotFoundError") {
-        setError("No camera found. Please connect a camera and try again.");
-      } else if (name === "NotReadableError") {
-        setError("Camera is in use by another application. Please close other apps using the camera.");
-      } else {
-        setError("Could not access camera. Please check your browser settings.");
-      }
-    }
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      setStream(null);
-    }
-  }, [stream]);
-
-  const startRecording = useCallback(() => {
-    if (!stream) return;
-
-    chunksRef.current = [];
-    setDuration(0);
-    setCurrentPromptIndex(0);
-    setRecordedBlob(null);
-
-    const supportedMimeType = getSupportedMimeType();
-    mimeTypeRef.current = supportedMimeType;
-
-    const recorderOptions: MediaRecorderOptions = {};
-    if (supportedMimeType) {
-      recorderOptions.mimeType = supportedMimeType;
-    }
-
-    const mediaRecorder = new MediaRecorder(stream, recorderOptions);
-
-    mediaRecorder.ondataavailable = (e) => {
-      if (e.data.size > 0) {
-        chunksRef.current.push(e.data);
-      }
-    };
-
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: supportedMimeType || "video/webm" });
-      const url = URL.createObjectURL(blob);
-      setRecordedBlob(blob);
-      setRecordedUrl(url);
-      stopCamera();
-
-      // Get actual duration from blob metadata instead of relying on interval timer
-      const tempVideo = document.createElement("video");
-      tempVideo.preload = "metadata";
-      tempVideo.onloadedmetadata = () => {
-        if (tempVideo.duration && isFinite(tempVideo.duration)) {
-          setVideoDuration(Math.round(tempVideo.duration));
-        }
-      };
-      tempVideo.src = url;
-    };
-
-    mediaRecorderRef.current = mediaRecorder;
-    mediaRecorder.start(1000);
-    track("apply_recording_started");
-    setIsRecording(true);
-    isRecordingRef.current = true;
-
-    let elapsed = 0;
-    timerRef.current = setInterval(() => {
-      elapsed++;
-      setDuration(elapsed);
-
-      const newPromptIndex = Math.min(
-        Math.floor(elapsed / PROMPT_DURATION),
-        (application?.prompts.length || 1) - 1
-      );
-      if (newPromptIndex > 0 && lastPromptStartRef.current === 0) {
-        lastPromptStartRef.current = elapsed;
-      }
-      setCurrentPromptIndex(newPromptIndex);
-
-      if (elapsed >= MAX_DURATION) {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
-        setVideoDuration(elapsed);
-        if (mediaRecorderRef.current && isRecordingRef.current) {
-          mediaRecorderRef.current.stop();
-          setIsRecording(false);
-          isRecordingRef.current = false;
-        }
-      }
-    }, 1000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stream, stopCamera, application?.prompts.length]);
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecordingRef.current) {
-      setVideoDuration(duration);
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      isRecordingRef.current = false;
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-  }, [duration]);
-
-  const uploadRecordedVideo = async (): Promise<{ key: string; url: string } | null> => {
-    if (!recordedBlob) return null;
-
-    const contentType = (mimeTypeRef.current || "video/webm").split(";")[0];
-    const ext = getExtensionForMimeType(contentType);
-    const filename = `recording.${ext}`;
-
-    const presignRes = await fetch("/api/upload/presign", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token,
-        filename,
-        contentType,
-        size: recordedBlob.size,
-      }),
-    });
-
-    if (!presignRes.ok) {
-      const data = await presignRes.json();
-      throw new Error(data.error || "Failed to get upload URL");
-    }
-
-    const presignData = await presignRes.json();
-
-    if (presignData.localMode) {
-      const uploadData = new FormData();
-      uploadData.append("file", new File([recordedBlob], filename, { type: contentType }));
-
-      const localRes = await fetch("/api/upload/local", {
-        method: "POST",
-        body: uploadData,
-      });
-
-      if (!localRes.ok) {
-        const data = await localRes.json();
-        throw new Error(data.error || "Local upload failed");
-      }
-
-      setUploadProgress(100);
-      const { key, url } = await localRes.json();
-      return { key, url };
-    }
-
-    const { uploadUrl, key, publicUrl } = presignData;
-
-    const xhr = new XMLHttpRequest();
-
-    await new Promise<void>((resolve, reject) => {
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          setUploadProgress(Math.round((e.loaded / e.total) * 100));
-        }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve();
-        } else {
-          reject(new Error("Upload failed"));
-        }
-      };
-
-      xhr.onerror = () => reject(new Error("Upload failed"));
-
-      xhr.open("PUT", uploadUrl);
-      xhr.setRequestHeader("Content-Type", contentType);
-      xhr.send(recordedBlob);
-    });
-
-    return { key, url: publicUrl };
-  };
-
-  const handleSubmitVideo = async () => {
-    if (!recordedBlob) {
-      setError("Please record a video first");
-      return;
-    }
-
-    if (videoDuration < 5) {
-      setError("Recording too short. Please record at least 5 seconds.");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-    setUploadProgress(0);
-
-    try {
-      const videoData = await uploadRecordedVideo();
-
-      if (!videoData) {
-        throw new Error("Failed to upload video");
-      }
-
-      const res = await fetch("/api/apply/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token,
-          videoKey: videoData.key,
-          videoUrl: videoData.url,
-          videoDurationSec: videoDuration || duration,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to submit application");
-      }
-
-      setStep("confirmation");
-      setHasSubmitted(true);
-      track("apply_submitted", { durationSec: videoDuration || duration });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
-      track("apply_video_error", { message: message.slice(0, 100) });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const clearVideo = () => {
-    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
-    setRecordedBlob(null);
-    setRecordedUrl(null);
-    setUploadProgress(0);
-    setVideoDuration(0);
-    setDuration(0);
-    setHasStarted(false);
-  };
-
   // Modal close logic
-  const canCloseModal = !isRecording && !submitting;
+  const canCloseModal = !loading;
 
   const handleCloseModal = () => {
     if (!canCloseModal) return;
-    if (step === "record" && stream) {
-      stopCamera();
-      setHasStarted(false);
-    }
     setModalOpen(false);
   };
 
   // Modal width based on step
-  const modalMaxWidth = step === "record" ? "52rem" : step === "confirmation" ? "36rem" : "40rem";
+  const modalMaxWidth = step === "confirmation" ? "36rem" : "40rem";
 
   // Step progress dots
-  const allStepsOrder: Step[] = ["basics", "questions", "story", "record", "confirmation"];
+  const allStepsOrder: Step[] = ["basics", "questions", "story", "confirmation"];
   const currentStepIdx = allStepsOrder.indexOf(step);
 
   const stepDots = (
@@ -703,7 +359,6 @@ export default function ApplyPage() {
           { key: "basics", label: "Basics", idx: 0 },
           { key: "questions", label: "Details", idx: 1 },
           { key: "story", label: "Story", idx: 2 },
-          { key: "record", label: "Record", idx: 3 },
         ] as const
       ).map((s, i) => {
         const isConfirmation = step === "confirmation";
@@ -712,8 +367,7 @@ export default function ApplyPage() {
           isConfirmation ||
           (s.key === "basics" && currentStepIdx > 0) ||
           (s.key === "questions" && currentStepIdx > 1) ||
-          (s.key === "story" && currentStepIdx > 2) ||
-          (s.key === "record" && currentStepIdx > 3);
+          (s.key === "story" && currentStepIdx > 2);
         return (
           <span key={s.key} className="flex items-center gap-2">
             {i > 0 && <div className="w-4 sm:w-8 h-px bg-slate-200" />}
@@ -746,8 +400,6 @@ export default function ApplyPage() {
       })}
     </div>
   );
-
-  const hasVideo = recordedBlob !== null;
 
   return (
     <main className="min-h-screen bg-white">
@@ -784,7 +436,7 @@ export default function ApplyPage() {
           <h2 className="font-serif text-xl font-bold text-slate-900 mb-4 text-center">
             Here&apos;s how it works
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
               {
                 num: 1,
@@ -793,13 +445,8 @@ export default function ApplyPage() {
               },
               {
                 num: 2,
-                title: "Record a video",
-                desc: "Two questions, 45 seconds each. No prep needed\u2014just be yourself.",
-              },
-              {
-                num: 3,
                 title: "We review & respond",
-                desc: "Our team watches every video. We\u2019ll get back to you within a few weeks.",
+                desc: "Our team reads every application. We\u2019ll get back to you within a few weeks.",
               },
             ].map((item) => (
               <div key={item.num} className="flex gap-3 p-4 sm:p-5 rounded-2xl bg-slate-50">
@@ -830,7 +477,7 @@ export default function ApplyPage() {
             {hasSubmitted ? "Application Submitted" : "Get Started"}
           </button>
           <p className="mt-2 text-sm text-slate-400">
-            {hasSubmitted ? "You\u2019ve already submitted your application." : "Takes about 5 minutes"}
+            {hasSubmitted ? "You\u2019ve already submitted your application." : "Takes about 3 minutes"}
           </p>
         </div>
       </div>
@@ -1445,7 +1092,7 @@ export default function ApplyPage() {
                       className="mt-1 h-5 w-5 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
                     />
                     <span className="text-sm text-slate-500 leading-relaxed">
-                      I understand that my video will be reviewed by the selection team and agree to the{" "}
+                      I understand that my application will be reviewed by the selection team and agree to the{" "}
                       <Link
                         href="/privacy"
                         target="_blank"
@@ -1453,7 +1100,7 @@ export default function ApplyPage() {
                       >
                         Privacy Policy
                       </Link>
-                      , including how my data and video submission will be handled.
+                      , including how my data will be handled.
                     </span>
                   </label>
 
@@ -1470,248 +1117,13 @@ export default function ApplyPage() {
                       disabled={loading}
                       className="flex-1 px-6 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99]"
                     >
-                      {loading ? "Submitting..." : "Continue to Video"}
+                      {loading ? "Submitting..." : "Submit Application"}
                     </button>
                   </div>
+                  <p className="text-center text-sm text-slate-500">
+                    Reminder: you can only submit your application once.
+                  </p>
                 </form>
-              )}
-
-              {/* Record step */}
-              {step === "record" && application && (
-                <div className="space-y-6">
-                  {/* Heading */}
-                  <div className="mb-2">
-                    <p className="text-sm text-slate-400 mb-1">Hi {application.name},</p>
-                    <h2 className="font-serif text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
-                      Record your response.
-                    </h2>
-                  </div>
-
-                  {/* Rules - only show before starting */}
-                  {!hasStarted && !hasVideo && (
-                    <div className="bg-slate-900 rounded-2xl p-6">
-                      <h3 className="font-semibold text-white mb-4 text-sm tracking-wide uppercase">
-                        How it works
-                      </h3>
-                      <ul className="space-y-3 text-sm">
-                        <li className="flex items-start gap-3">
-                          <span className="mt-0.5 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-xs text-white/70">1</span>
-                          <p className="text-slate-300"><span className="text-white font-medium">{application.prompts.length} questions, {PROMPT_DURATION}s each.</span> Questions appear one at a time when you start recording.</p>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <span className="mt-0.5 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-xs text-white/70">2</span>
-                          <p className="text-slate-300"><span className="text-white font-medium">One take.</span> You won&apos;t see the questions beforehand and there are no do-overs.</p>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <span className="mt-0.5 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-xs text-white/70">3</span>
-                          <p className="text-slate-300"><span className="text-white font-medium">No editing.</span> We want the real you, not the polished you.</p>
-                        </li>
-                      </ul>
-                      <p className="mt-4 text-xs text-slate-500 italic">
-                        Tip: Don&apos;t overthink it. When the question changes, just start talking.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Prompt box - only visible during recording */}
-                  {isRecording && (
-                    <div className="bg-slate-900 rounded-2xl p-6 md:p-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <p className="text-sm text-slate-400 font-medium">
-                          Question {currentPromptIndex + 1} of {application.prompts.length}
-                        </p>
-                        <div className="flex gap-2">
-                          {application.prompts.map((_, idx) => (
-                            <div
-                              key={idx}
-                              className={`w-2 h-2 rounded-full transition-all ${
-                                idx === currentPromptIndex
-                                  ? "bg-white scale-125"
-                                  : idx < currentPromptIndex
-                                  ? "bg-slate-500"
-                                  : "bg-slate-700"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-xl md:text-2xl text-white font-medium leading-relaxed">
-                        {application.prompts[currentPromptIndex]?.text}
-                      </p>
-                      <div className="mt-4 h-1 bg-slate-700 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-white/50 transition-all duration-1000"
-                          style={{
-                            width: `${((duration % PROMPT_DURATION) / PROMPT_DURATION) * 100}%`,
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between mt-2">
-                        <p className="text-xs text-slate-500">
-                          {currentPromptIndex < (application?.prompts.length || 1) - 1
-                            ? `${PROMPT_DURATION - (duration % PROMPT_DURATION)}s until next question`
-                            : `${Math.max(0, MAX_DURATION - duration)}s remaining`}
-                        </p>
-                        {currentPromptIndex < (application?.prompts.length || 1) - 1 && (
-                          <button
-                            onClick={() => {
-                              lastPromptStartRef.current = duration;
-                              setCurrentPromptIndex(currentPromptIndex + 1);
-                            }}
-                            className="min-h-[44px] -my-2 px-2 text-xs text-slate-400 hover:text-white transition-colors"
-                          >
-                            Skip to next question &rarr;
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Video area */}
-                  <div className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6">
-                    {!hasStarted && !hasVideo && (
-                      <div className="text-center py-10">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                        </div>
-                        <p className="text-slate-600 mb-1">Record your {MAX_DURATION}-second response</p>
-                        <p className="text-sm text-slate-500 mb-5">
-                          Questions will appear on screen once you start recording.
-                        </p>
-                        <button
-                          onClick={startCamera}
-                          className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                          Enable Camera
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Recording view */}
-                    {stream && !recordedBlob && (
-                      <div className="space-y-5">
-                        <div className="relative bg-black rounded-xl overflow-hidden aspect-[3/4] sm:aspect-video">
-                          <video
-                            ref={videoRef}
-                            autoPlay
-                            muted
-                            playsInline
-                            className="w-full h-full object-cover"
-                          />
-                          {isRecording && (
-                            <>
-                              <div className="absolute top-4 left-4 flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full">
-                                <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                <span className="font-mono text-sm">{formatTime(duration)} / {formatTime(MAX_DURATION)}</span>
-                              </div>
-                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-700">
-                                <div
-                                  className="h-full bg-red-500 transition-all duration-1000"
-                                  style={{ width: `${(duration / MAX_DURATION) * 100}%` }}
-                                />
-                              </div>
-                            </>
-                          )}
-                        </div>
-
-                        <div className="flex justify-center gap-4">
-                          {!isRecording && (
-                            <button
-                              onClick={startRecording}
-                              className="px-8 py-4 bg-red-600 text-white rounded-full font-medium hover:bg-red-700 transition-all flex items-center gap-3"
-                            >
-                              <span className="w-3 h-3 bg-white rounded-full" />
-                              Start Recording
-                            </button>
-                          )}
-
-                          {isRecording && (() => {
-                            const onLastQuestion = currentPromptIndex >= (application?.prompts.length || 1) - 1;
-                            const timeOnLastQuestion = onLastQuestion ? duration - lastPromptStartRef.current : 0;
-                            const canStop = onLastQuestion && timeOnLastQuestion >= PROMPT_DURATION;
-                            const secsLeft = PROMPT_DURATION - timeOnLastQuestion;
-                            return (
-                              <button
-                                onClick={stopRecording}
-                                disabled={!canStop}
-                                className="px-8 py-4 bg-slate-900 text-white rounded-full font-medium hover:bg-slate-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                              >
-                                {!onLastQuestion
-                                  ? `Answer both questions (${PROMPT_DURATION - duration}s)`
-                                  : canStop
-                                    ? "Stop Recording"
-                                    : `${secsLeft}s remaining`}
-                              </button>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Recording complete */}
-                    {recordedBlob && (
-                      <div className="space-y-5">
-                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-4">
-                          <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="font-medium text-emerald-800">Video recorded!</p>
-                            <p className="text-sm text-emerald-600">{formatTime(videoDuration || duration)} — ready to submit</p>
-                          </div>
-                        </div>
-
-                        {/* Video preview */}
-                        {recordedUrl && (
-                          <div className="bg-slate-900 rounded-xl overflow-hidden">
-                            <video
-                              src={recordedUrl}
-                              controls
-                              playsInline
-                              className="w-full aspect-[3/4] sm:aspect-video"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Upload progress */}
-                    {submitting && uploadProgress > 0 && uploadProgress < 100 && (
-                      <div className="mt-5">
-                        <div className="flex justify-between text-sm text-slate-600 mb-2">
-                          <span>Uploading...</span>
-                          <span>{uploadProgress}%</span>
-                        </div>
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-slate-900 transition-all"
-                            style={{ width: `${uploadProgress}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Submit button */}
-                  {hasVideo && (
-                    <div className="space-y-4">
-                      <button
-                        onClick={handleSubmitVideo}
-                        disabled={submitting}
-                        className="w-full px-6 py-4 bg-blue-600 text-white rounded-full font-medium text-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99]"
-                      >
-                        {submitting ? "Submitting..." : "Submit Application"}
-                      </button>
-                      <p className="text-center text-sm text-slate-500">
-                        Reminder: you can only submit your application once.
-                      </p>
-                    </div>
-                  )}
-                </div>
               )}
 
               {/* Confirmation step */}
@@ -1728,15 +1140,15 @@ export default function ApplyPage() {
                   </h2>
 
                   <p className="text-slate-500 max-w-sm mx-auto mb-8">
-                    Thanks for putting yourself out there. We watch every single video
-                    and will be in touch.
+                    Thanks for putting yourself out there. We read every single
+                    application and will be in touch.
                   </p>
 
                   <div className="text-left max-w-sm mx-auto mb-8">
                     {[
                       {
                         num: "1",
-                        title: "We watch your video",
+                        title: "We read your application",
                         desc: "A real human reviews every application.",
                       },
                       {

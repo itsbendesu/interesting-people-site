@@ -1,17 +1,19 @@
 # Interesting People
 
-A conference application platform where applicants submit video responses to prompts, and reviewers score and manage submissions.
+A conference application platform where applicants submit a written application, and reviewers score and manage submissions.
+
+> **Note (June 2026):** the video step was removed from all application flows. The video upload/recording documentation below is retained for historical reference; videos from earlier applicants remain stored in R2 and playable in the admin panel.
 
 ## Features
 
 **Applicants:**
 - Submit name, email, location/timezone, short bio, and optional links
 - Choose from 7 thought-provoking prompts
-- Record a 90-second video in-browser OR upload a pre-recorded video
+- ~~Record a 90-second video in-browser OR upload a pre-recorded video~~ (removed June 2026)
 - Direct-to-cloud upload with progress indicator
 
 **Reviewers:**
-- Review submissions with video playback
+- Review submissions (with video playback for legacy submissions)
 - Score applicants on 3 dimensions (1-5 scale each):
   - **Curiosity vs Ego** - genuine curiosity vs ego-driven
   - **Participation vs Spectatorship** - active participant vs passive observer
@@ -24,7 +26,7 @@ A conference application platform where applicants submit video responses to pro
 - **Styling:** Tailwind CSS
 - **Database:** PostgreSQL + Prisma ORM
 - **Auth:** iron-session (cookie-based)
-- **Video Storage:** Cloudflare R2 (S3-compatible) with presigned URLs
+- **Video Storage (legacy):** Cloudflare R2 (S3-compatible) — playback of old submissions only
 
 ## Quick Start
 
@@ -121,7 +123,7 @@ Find your Account ID in the Cloudflare dashboard URL or R2 overview page.
 
 ---
 
-## Video Upload Flow
+## Video Upload Flow (removed June 2026 — historical)
 
 ```
 ┌──────────┐    1. Request presigned URL    ┌──────────┐
