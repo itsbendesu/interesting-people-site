@@ -37,6 +37,7 @@ const comingThisYear: { name: string; role: string; knownFor: string; image?: st
   { name: "Jason Verners", role: "Magician", knownFor: "Close-Up Magic", image: "/images/speakers/jason-verners.jpg" },
   { name: "Taryn Jensen", role: "Community Builder", knownFor: "The Giving Pledge", image: "/images/speakers/taryn-jensen.jpg" },
   { name: "Emma Gilchrist", role: "Co-Founder", knownFor: "The Narwhal", image: "/images/speakers/emma-gilchrist.jpg" },
+  { name: "Adam Lisagor", role: "Director", knownFor: "Sandwich", image: "/images/speakers/adam-lisagor.jpg" },
 ];
 
 function initialsFor(name: string) {
